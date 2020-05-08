@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "619698704054",
+    "firebase_url": "https://pg-check-68d1b.firebaseio.com",
+    "project_id": "pg-check-68d1b",
+    "storage_bucket": "pg-check-68d1b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:619698704054:android:6ba8833b810fc9c142e017",
+        "android_client_info": {
+          "package_name": "com.pgcheck.pg_check"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "619698704054-pa7t1ljv1op0n7r6526efvggl6hi7dcl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBebE2D8PjYH7EFUCTdHzfTZX62R-8eCso"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "619698704054-pa7t1ljv1op0n7r6526efvggl6hi7dcl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
