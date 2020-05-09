@@ -3,6 +3,10 @@ import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/services/auth.dart';
 
 class Register extends StatefulWidget {
+
+  final Function toggleView;
+  Register({ this.toggleView });
+
   @override
   _RegisterState createState() => _RegisterState();
 }
@@ -28,6 +32,15 @@ class _RegisterState extends State<Register> {
         backgroundColor: Colors.blue[400],
         elevation: 0.0,
         title: Text(translation('sign_up_title')),
+        actions: <Widget>[
+          FlatButton.icon(
+            icon: Icon(Icons.person),
+            label: Text(translation('sign_in_text')),
+            onPressed: () {
+              widget.toggleView();
+            },  
+          )
+        ],
       ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50),

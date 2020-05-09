@@ -3,6 +3,10 @@ import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/services/auth.dart';
 
 class SignIn extends StatefulWidget {
+
+  final Function toggleView;
+  SignIn({ this.toggleView });
+
   @override
   _SignInState createState() => _SignInState();
 }
@@ -28,6 +32,15 @@ class _SignInState extends State<SignIn> {
         backgroundColor: Colors.blue[400],
         elevation: 0.0,
         title: Text(translation('sign_in_title')),
+        actions: <Widget>[
+          FlatButton.icon(
+            icon: Icon(Icons.person),
+            label: Text(translation('sign_up_text')),
+            onPressed: () {
+              widget.toggleView();
+            },  
+          )
+        ],
       ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50),
