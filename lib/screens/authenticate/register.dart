@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/services/auth.dart';
 
-class SignIn extends StatefulWidget {
+class Register extends StatefulWidget {
   @override
-  _SignInState createState() => _SignInState();
+  _RegisterState createState() => _RegisterState();
 }
 
+class _RegisterState extends State<Register> {
 
-class _SignInState extends State<SignIn> {
 
   final AuthService _auth = AuthService();
 
   // text field state
   String email = '';
   String password = '';
-
   
+
   @override
   Widget build(BuildContext context) {
 
@@ -27,7 +27,7 @@ class _SignInState extends State<SignIn> {
       appBar: AppBar(
         backgroundColor: Colors.blue[400],
         elevation: 0.0,
-        title: Text(translation('sign_in_title')),
+        title: Text(translation('sign_up_title')),
       ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50),
@@ -51,7 +51,7 @@ class _SignInState extends State<SignIn> {
               RaisedButton(
                 color: Colors.indigo,
                 child: Text(
-                  translation('sign_in_text'), 
+                  translation('sign_up_text'), 
                   style: TextStyle(color: Colors.white)
                   ),
                 onPressed: () async {

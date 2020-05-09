@@ -1,6 +1,8 @@
 {
     "sign_in_title": "Sign in to PG Check",
     "sign_in_text": "Sign in",
+    "sign_up_title": "Sign up to PG Check",
+    "sign_up_text": "Register",
     "home_title": "PG Check",
     "logout_button": "Logout",
 
