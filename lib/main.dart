@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pg_check/models/user.dart';
 import 'package:pg_check/screens/wrapper.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:pg_check/services/auth.dart';
+import 'package:provider/provider.dart';
 import 'app_localizations.dart';
 
 void main() {
@@ -11,7 +14,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+
+    return StreamProvider<User>.value(
+    
+    value: AuthService().user,
+    child: MaterialApp(
 
       supportedLocales: [
         Locale('en', 'US'),
@@ -44,6 +51,6 @@ class MyApp extends StatelessWidget {
       },
 
       home: Wrapper(),
-    );
+    ));
   }
 }

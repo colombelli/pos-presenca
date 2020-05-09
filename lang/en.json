@@ -1,4 +1,9 @@
 {
+    "sign_in_title": "Sign in to PG Check",
+    "sign_in_text": "Sign in",
+    "home_title": "PG Check",
+    "logout_button": "Logout",
+
     "example_string_1": "this app is in english",
     "example_string_2": "some text here"   
 }
