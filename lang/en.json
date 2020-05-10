@@ -5,6 +5,9 @@
     "sign_up_text": "Register",
     "home_title": "PG Check",
     "logout_button": "Logout",
+    "email_empty": "Enter an e-mail",
+    "short_pass": "Password should be at least 6 chars long",
+    "invalid_email_error": "Please supply a valid e-mail",
 
     "example_string_1": "this app is in english",
     "example_string_2": "some text here"   

@@ -15,10 +15,12 @@ class _RegisterState extends State<Register> {
 
 
   final AuthService _auth = AuthService();
+  final _formKey = GlobalKey<FormState>();
 
   // text field state
   String email = '';
   String password = '';
+  String error = '';
   
 
   @override
@@ -45,16 +47,19 @@ class _RegisterState extends State<Register> {
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50),
         child: Form(
+          key: _formKey,
           child: Column(
             children: <Widget>[
               SizedBox(height: 20.0),
               TextFormField(
+                validator: (value) => value.isEmpty ? translation('email_empty') : null,
                 onChanged: (value){
                   setState(() => email = value);
                 },
               ),
               SizedBox(height: 20.0),
               TextFormField(
+                validator: (value) => value.length < 6 ? translation('short_pass') : null,
                 obscureText: true,
                 onChanged: (value) {
                   setState(() => password = value);
@@ -68,9 +73,21 @@ class _RegisterState extends State<Register> {
                   style: TextStyle(color: Colors.white)
                   ),
                 onPressed: () async {
-                  
+                  if(_formKey.currentState.validate()){
+                    dynamic result = await _auth.registerEmailPassword(email, password);
+                    if(result == null){
+                      setState(() {
+                        error = translation('invalid_email_error');
+                      });
+                    }
+                  }
                 },
-              )
+              ),
+              SizedBox(height: 20.0),
+              Text(
+                error,
+                style: TextStyle(color: Colors.red, fontSize: 14.0)
+                )
             ],
           ),
           ),

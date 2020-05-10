@@ -5,6 +5,9 @@
     "sign_up_text": "Registrar",
     "home_title": "PG Check",
     "logout_button": "Sair",
+    "email_empty": "Digite um e-mail",
+    "short_pass": "A senha deve conter no mínimo 6 caracteres",
+    "invalid_email_error": "Por favor, digite um e-mail válido",
 
     "example_string_1": "esse app está em inglês",
     "example_string_2": "algum texto aqui"   
