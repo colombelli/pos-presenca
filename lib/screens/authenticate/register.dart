@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/services/auth.dart';
+import 'package:pg_check/shared/constants.dart';
+import 'package:pg_check/shared/loading.dart';
 
 class Register extends StatefulWidget {
 
@@ -21,6 +23,7 @@ class _RegisterState extends State<Register> {
   String email = '';
   String password = '';
   String error = '';
+  bool loading = false;
   
 
   @override
@@ -28,7 +31,7 @@ class _RegisterState extends State<Register> {
 
     final translation = (String s) => AppLocalizations.of(context).translate(s);
 
-    return Scaffold (
+    return loading ? Loading() : Scaffold (
       backgroundColor: Colors.blue[100],
       appBar: AppBar(
         backgroundColor: Colors.blue[400],
@@ -52,6 +55,9 @@ class _RegisterState extends State<Register> {
             children: <Widget>[
               SizedBox(height: 20.0),
               TextFormField(
+                decoration: textInputDecoration.copyWith(
+                  hintText: translation("email_hint"),
+                ),
                 validator: (value) => value.isEmpty ? translation('email_empty') : null,
                 onChanged: (value){
                   setState(() => email = value);
@@ -59,6 +65,9 @@ class _RegisterState extends State<Register> {
               ),
               SizedBox(height: 20.0),
               TextFormField(
+                decoration: textInputDecoration.copyWith(
+                  hintText: translation("password_hint")
+                ),
                 validator: (value) => value.length < 6 ? translation('short_pass') : null,
                 obscureText: true,
                 onChanged: (value) {
@@ -74,10 +83,13 @@ class _RegisterState extends State<Register> {
                   ),
                 onPressed: () async {
                   if(_formKey.currentState.validate()){
+                    setState(() => loading = true);
+
                     dynamic result = await _auth.registerEmailPassword(email, password);
                     if(result == null){
                       setState(() {
                         error = translation('invalid_email_error');
+                        setState(() => loading = false);
                       });
                     }
                   }

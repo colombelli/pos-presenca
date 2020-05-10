@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/services/auth.dart';
+import 'package:pg_check/shared/constants.dart';
+import 'package:pg_check/shared/loading.dart';
 
 class SignIn extends StatefulWidget {
 
@@ -16,6 +18,7 @@ class _SignInState extends State<SignIn> {
 
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
+  bool loading = false;
 
   // text field state
   String email = '';
@@ -27,7 +30,7 @@ class _SignInState extends State<SignIn> {
 
     final translation = (String s) => AppLocalizations.of(context).translate(s);
 
-    return Scaffold (
+    return loading ? Loading() : Scaffold (
       backgroundColor: Colors.blue[100],
       appBar: AppBar(
         backgroundColor: Colors.blue[400],
@@ -36,7 +39,7 @@ class _SignInState extends State<SignIn> {
         actions: <Widget>[
           FlatButton.icon(
             icon: Icon(Icons.person),
-            label: Text(translation('sign_up_text')),
+            label: Text(translation('sign_up_button')),
             onPressed: () {
               widget.toggleView();
             },  
@@ -51,6 +54,9 @@ class _SignInState extends State<SignIn> {
             children: <Widget>[
               SizedBox(height: 20.0),
               TextFormField(
+                decoration: textInputDecoration.copyWith(
+                  hintText: translation("email_hint")
+                ),
                 validator: (value) => value.isEmpty ? translation('email_empty') : null,
                 onChanged: (value){
                   setState(() => email = value);
@@ -58,6 +64,9 @@ class _SignInState extends State<SignIn> {
               ),
               SizedBox(height: 20.0),
               TextFormField(
+                decoration: textInputDecoration.copyWith(
+                  hintText: translation("password_hint")
+                ),
                 validator: (value) => value.length < 6 ? translation('short_pass') : null,
                 obscureText: true,
                 onChanged: (value) {
@@ -73,10 +82,15 @@ class _SignInState extends State<SignIn> {
                   ),
                 onPressed: () async {
                   if(_formKey.currentState.validate()){
+                    
+                    // activates loading widget
+                    setState(() => loading=true);
+
                     dynamic result = await _auth.signIn(email, password);
                     if(result == null){
                       setState(() {
                         error = translation('invalid_credentials');
+                        loading = false;
                       });
                     }
                   }

@@ -3,12 +3,15 @@
     "sign_in_text": "Sign in",
     "sign_up_title": "Sign up to PG Check",
     "sign_up_text": "Register",
+    "sign_up_button": "Sign Up",
     "home_title": "PG Check",
     "logout_button": "Logout",
     "email_empty": "Enter an e-mail",
     "short_pass": "Password should be at least 6 chars long",
     "invalid_email_error": "Please supply a valid e-mail",
     "invalid_credentials": "Invalid credentials",
+    "email_hint": "E-mail",
+    "password_hint": "Password",
 
     "example_string_1": "this app is in english",
     "example_string_2": "some text here"   
