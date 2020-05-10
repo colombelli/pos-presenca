@@ -8,6 +8,7 @@
     "email_empty": "Enter an e-mail",
     "short_pass": "Password should be at least 6 chars long",
     "invalid_email_error": "Please supply a valid e-mail",
+    "invalid_credentials": "Invalid credentials",
 
     "example_string_1": "this app is in english",
     "example_string_2": "some text here"   
