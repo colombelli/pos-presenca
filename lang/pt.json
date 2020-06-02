@@ -12,6 +12,12 @@
     "invalid_credentials": "Credenciais inválidas",
     "email_hint": "E-mail",
     "password_hint": "Senha",
+    "can_check_biometrics": "Consegue checar biometria:",
+    "check_biometrics": "Checar biometria",
+    "available_biometrics": "Tipos de biometria disponíveis:",
+    "get_available_biometrics": "Checar tipos de biometria",
+    "current_state": "Estado:",
+    "bioauthenticate": "Bioautenticar",
 
     "example_string_1": "esse app está em inglês",
     "example_string_2": "algum texto aqui"   

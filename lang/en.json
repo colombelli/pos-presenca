@@ -12,6 +12,12 @@
     "invalid_credentials": "Invalid credentials",
     "email_hint": "E-mail",
     "password_hint": "Password",
+    "can_check_biometrics": "Can check biometrics:",
+    "check_biometrics": "Check biometrics",
+    "available_biometrics": "Available biometrics:",
+    "get_available_biometrics": "Get available biometrics",
+    "current_state": "Current state:",
+    "bioauthenticate": "Bioauthenticate",
 
     "example_string_1": "this app is in english",
     "example_string_2": "some text here"   
