@@ -12,6 +12,8 @@
     "invalid_credentials": "Credenciais inválidas",
     "email_hint": "E-mail",
     "password_hint": "Senha",
+    "student": "Orientando",
+    "professor": "Orientador",
 
     "example_string_1": "esse app está em inglês",
     "example_string_2": "algum texto aqui"   

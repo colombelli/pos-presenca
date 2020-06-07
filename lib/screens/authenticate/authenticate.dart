@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pg_check/screens/authenticate/register.dart';
 import 'package:pg_check/screens/authenticate/sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:pg_check/services/database.dart';
 
 class Authenticate extends StatefulWidget {
   @override
@@ -22,7 +25,9 @@ class _AuthenticateState extends State<Authenticate> {
     if (showSignIn) {
       return SignIn(toggleView: toggleView);
     } else {
-      return Register(toggleView: toggleView);
+      return StreamProvider<QuerySnapshot>.value(
+        value: DatabaseService().programs,
+        child: Register(toggleView: toggleView));
     }
 
   }

@@ -12,6 +12,8 @@
     "invalid_credentials": "Invalid credentials",
     "email_hint": "E-mail",
     "password_hint": "Password",
+    "student": "Student",
+    "professor": "Professor",
 
     "example_string_1": "this app is in english",
     "example_string_2": "some text here"   
