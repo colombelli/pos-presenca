@@ -13,18 +13,99 @@ class Professor extends StatelessWidget {
         title: new Text("Demo"),
       ),
 
-      body: StreamBuilder(
-        stream: Firestore.instance.collection('students').snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) return Text('Loading data. Please wait.');
-          return Column(
-            children: <Widget>[
-              Text(snapshot.data.documents[0]['name']),
-              Text(snapshot.data.documents[0]['professor'])
-            ],
-          );
-        },
-      )
+      body: ListPage(),
     );
   }
 }
+
+class StudentListPage extends StatefulWidget {
+  @override
+  _StudentListPageState createState() => _StudentListPageState();
+}
+
+class _StudentListPageState extends State<StudentListPage> {
+
+  Future getPosts() async {
+    var firestone = Firestore.instance;
+    QuerySnapshot qn = await firestone.collection("students").getDocuments();
+
+    return qn.documents;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: FutureBuilder(builder: (_, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: Text("Loading..."),
+          );
+        } else {
+
+        }
+      }),
+      
+    );
+  }
+}
+
+
+class AbscencesPage extends StatefulWidget {
+  @override
+  _AbscencesPageState createState() => _AbscencesPageState();
+}
+
+class _AbscencesPageState extends State<AbscencesPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      
+    );
+  }
+}
+
+class DetailsPage extends StatefulWidget {
+  @override
+  _DetailsPageState createState() => _DetailsPageState();
+}
+
+class _DetailsPageState extends State<DetailsPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      
+    );
+  }
+}
+
+//for student in student:
+//  if student.professor == professor:
+//     //display student name in initial list
+//
+//    for abscence in abscences: // if student name is clicked the following happens in a new page
+//      if abscence.student == student:
+//        //show abscence date
+//
+//        if date.isClicked():
+//          // show date, hour, justified, justification, etc
+
+
+
+
+
+
+
+
+
+//      body: StreamBuilder(
+//        stream: Firestore.instance.collection('students').snapshots(),
+//        builder: (context, snapshot) {
+//          if (!snapshot.hasData) return Text('Loading data. Please wait.');
+//          return Column(
+//            children: <Widget>[
+//              Text(snapshot.data.documents[0]['name']),
+//              Text(snapshot.data.documents[0]['professor'])
+//            ],
+//          );
+//        },
+//      )
