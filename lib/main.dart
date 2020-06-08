@@ -6,6 +6,8 @@ import 'package:pg_check/services/auth.dart';
 import 'package:provider/provider.dart';
 import 'app_localizations.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 void main() {
   runApp(MyApp());
 }

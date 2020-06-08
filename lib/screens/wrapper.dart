@@ -3,6 +3,7 @@ import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/models/user.dart';
 import 'package:pg_check/screens/authenticate/authenticate.dart';
 import 'package:pg_check/screens/home/home.dart';
+import 'package:pg_check/screens/professor/professor.dart';
 import 'package:provider/provider.dart';
 
 class Wrapper extends StatelessWidget {
@@ -14,7 +15,7 @@ class Wrapper extends StatelessWidget {
    if (user == null) {
      return Authenticate();
    } else {
-     return Home();
+     return Professor();
    }
   }
 }
