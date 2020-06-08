@@ -10,10 +10,10 @@ class Professor extends StatelessWidget {
 
     return Scaffold(
       appBar: new AppBar(
-        title: new Text("Demo"),
+        title: new Text("Professor page"),
       ),
 
-      body: ListPage(),
+      body: StudentListPage(),
     );
   }
 }
@@ -29,22 +29,35 @@ class _StudentListPageState extends State<StudentListPage> {
     var firestone = Firestore.instance;
     QuerySnapshot qn = await firestone.collection("students").getDocuments();
 
-    return qn.documents;
+    return qn.documents;//.where(/* campo professor == nome ususario logado*/);
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: FutureBuilder(builder: (_, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: Text("Loading..."),
-          );
-        } else {
+      child: FutureBuilder(
+        future: getPosts(),
+        builder: (_, snapshot) {
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: Text("Loading..."),
+            );
+          } else {
+
+            return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (_, index){
+
+                return ListTile(
+                  title: Text(snapshot.data[index].data['name']),
+                );
+
+            });
 
         }
+
       }),
-      
     );
   }
 }
