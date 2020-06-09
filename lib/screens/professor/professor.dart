@@ -29,7 +29,17 @@ class _StudentListPageState extends State<StudentListPage> {
 
   Future getStudents() async {
     var firestone = Firestore.instance;
-    QuerySnapshot qn = await firestone.collection("students").getDocuments();
+    QuerySnapshot  qn;
+    await firestone.collection("programs").where("name", isEqualTo: "PPGC").limit(1).getDocuments().then( (data) async {
+      if (data.documents.length > 0){
+          qn = await data.documents[0].reference.collection("students").getDocuments();
+        }
+      }
+    );
+
+    for (int i=0; i<qn.documents.length; i++) {
+      print(qn.documents[i].documentID);
+    }
     return qn.documents;//.where((snapshot) => snapshot.data.containsValue("professor"));
   }
 
@@ -47,7 +57,7 @@ class _StudentListPageState extends State<StudentListPage> {
   Widget build(BuildContext context) {
     return Container(
       child: FutureBuilder(
-        future: _data,
+        future: getStudents(),
         builder: (_, snapshot) {
 
           if (snapshot.connectionState == ConnectionState.waiting) {
