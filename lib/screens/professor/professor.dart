@@ -15,7 +15,7 @@ class Professor extends StatelessWidget {
     return Scaffold(
       appBar: new AppBar(
         leading: Icon(Icons.school),
-        title: new Text("Your Students"),
+        title: new Text("Seus Alunos"),
         backgroundColor: Colors.blue[400],
         elevation: 0.0,
         actions: <Widget>[
@@ -136,7 +136,7 @@ class _AbsencesPageState extends State<AbsencesPage> {
     return Scaffold(
       appBar: AppBar(
        // leading: Icon(Icons.person_outline),
-        title: Text("${widget.student.data['name']}'s absences"),
+        title: Text("Faltas de ${widget.student.data['name']}"),
        ),
       body: Container(
         child: FutureBuilder(
@@ -160,7 +160,8 @@ class _AbsencesPageState extends State<AbsencesPage> {
                     );
                 });
           } else {
-                return Center(child: Text("There are no registered absences for that student"),);
+                //return Center(child: Text("There are no registered absences for that student"),);
+                return Center(child: Text("Não existem faltas registradas para este aluno."),);
           }
         }),
       ),
@@ -189,14 +190,14 @@ class _DetailsPageState extends State<DetailsPage> {
           Card(
             child: ListTile(
               leading: Icon(widget.absence.data['justified'] ? Icons.sentiment_satisfied: Icons.sentiment_dissatisfied),
-              title: Text("Justified"),
-              subtitle: Text( (widget.absence.data['justified']) ? "Yes" : "No" ),
+              title: Text("Justificado:"),
+              subtitle: Text( (widget.absence.data['justified']) ? "Sim" : "Não" ),
             ),
           ),
           Card(
             child: ListTile(
               leading: Icon(widget.absence.data['justified'] ? Icons.message: Icons.speaker_notes_off),
-              title: Text("Justification"),
+              title: Text("Justificativa:"),
               subtitle: Text(widget.absence.data['justification']),
             ),
           ),
