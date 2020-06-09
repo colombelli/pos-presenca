@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pg_check/app_localizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class Professor extends StatelessWidget {
   @override
@@ -10,7 +11,8 @@ class Professor extends StatelessWidget {
 
     return Scaffold(
       appBar: new AppBar(
-        title: new Text("Professor page"),
+        leading: Icon(Icons.school),
+        title: new Text("Your Students"),
       ),
 
       body: StudentListPage(),
@@ -55,20 +57,21 @@ class _StudentListPageState extends State<StudentListPage> {
       child: FutureBuilder(
         future: _data,
         builder: (_, snapshot) {
-
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-              child: Text("Loading..."),
+              child: CircularProgressIndicator(), //Text("Loading..."),
             );
           } else {
-
             return ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (_, index){
 
-                return ListTile(
-                  title: Text(snapshot.data[index].data['name']),
-                  onTap: () => navigateToAbsences(snapshot.data[index]),
+                return Card(
+                  child: ListTile(
+                    leading: Icon(Icons.person_outline),
+                    title: Text(snapshot.data[index].data['name']),
+                    onTap: () => navigateToAbsences(snapshot.data[index]),
+                  ),
                 );
             });
         }
@@ -77,6 +80,19 @@ class _StudentListPageState extends State<StudentListPage> {
   }
 }
 
+class DisplayField extends StatelessWidget {
+
+  final String _field;
+  final String _information;
+  DisplayField(this._field, this._information);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      
+    );
+  }
+}
 
 class AbsencesPage extends StatefulWidget {
 
@@ -91,7 +107,6 @@ class _AbsencesPageState extends State<AbsencesPage> {
 
   Future _data;
 
-
   Future getAbsences() async {
     var firestone = Firestore.instance;
     QuerySnapshot  qn;
@@ -99,7 +114,7 @@ class _AbsencesPageState extends State<AbsencesPage> {
     await firestone.collection("programs").where("name", isEqualTo: "PPGC").limit(1).getDocuments().then( (data) async {
       if (data.documents.length > 0){
           await data.documents[0].reference.collection("students").where("name", isEqualTo: widget.student.data['name']).limit(1).getDocuments().then( (atad) async {
-            qn = await atad.documents[0].reference.collection('absences').getDocuments();
+            qn = await atad.documents[0].reference.collection('absences').orderBy('date').getDocuments();
           });
         }
       }
@@ -126,22 +141,25 @@ class _AbsencesPageState extends State<AbsencesPage> {
         child: FutureBuilder(
           future: _data,
           builder: (_, snapshot) {
-            print("snapshot: ${snapshot.data.toString()}");
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
-                child: Text("Loading..."),
+                
+                child: CircularProgressIndicator(), //Text("Loading..."),
               );
-            } else {
-
+            } else if (snapshot.data.isNotEmpty) {
               return ListView.builder(
-                itemCount: snapshot.data.length,
-                itemBuilder: (_, index){
-
-                  return ListTile(
-                    title: Text(DateTime.parse(snapshot.data[index].data['date'].toDate().toString()).toString()),
-                    onTap: () => navigateToDetails(snapshot.data[index]),
-                  );
-              });
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (_, index){
+                    return Card(
+                      child: ListTile(
+                        leading: Icon(Icons.calendar_today),
+                        title: Text(DateFormat('yMd').format(DateTime.parse(snapshot.data[index].data['date'].toDate().toString()))),
+                        onTap: () => navigateToDetails(snapshot.data[index]),
+                      ),
+                    );
+                });
+          } else {
+                return Center(child: Text("There are no registered absences for that student"),);
           }
         }),
       ),
@@ -158,20 +176,45 @@ class DetailsPage extends StatefulWidget {
   _DetailsPageState createState() => _DetailsPageState();
 }
 
+  Widget box({width: 100.0, height: 100.0}) => Container(
+        width: width,
+        height: height,
+        color: Colors.grey,
+  );
+
 class _DetailsPageState extends State<DetailsPage> {
+
+  buildBox(double _width, double _height) {
+    return Container(
+      width: _width,
+      height: _height,
+      color: Colors.grey,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.absence.data['date'].toString()),
+        title: Text(DateFormat('yMd').format(DateTime.parse(widget.absence.data['date'].toDate().toString()))),
       ),
-      body: Container(
-        child: Card(
-          child: ListTile(
-            title: Text(widget.absence.data['date'].toString()),
-          subtitle: Text(widget.absence.data['justified']),
+      body: ListView(
+        children: <Widget> [
+          Card(
+            child: ListTile(
+              leading: Icon(widget.absence.data['justified'] ? Icons.sentiment_satisfied: Icons.sentiment_dissatisfied),
+              title: Text("Justified"),
+              subtitle: Text( (widget.absence.data['justified']) ? "Yes" : "No" ),
+            ),
           ),
-        ),
+          Card(
+            child: ListTile(
+              leading: Icon(widget.absence.data['justified'] ? Icons.message: Icons.speaker_notes_off),
+              title: Text("Justification"),
+              subtitle: Text(widget.absence.data['justification']),
+            ),
+          ),
+        ]
       ),
     );
   }
