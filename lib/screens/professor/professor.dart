@@ -79,32 +79,14 @@ class _StudentListPageState extends State<StudentListPage> {
     );
   }
 }
-
-class DisplayField extends StatelessWidget {
-
-  final String _field;
-  final String _information;
-  DisplayField(this._field, this._information);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      
-    );
-  }
-}
-
 class AbsencesPage extends StatefulWidget {
-
   final DocumentSnapshot student;
   AbsencesPage({this.student});
-
   @override
   _AbsencesPageState createState() => _AbsencesPageState();
 }
 
 class _AbsencesPageState extends State<AbsencesPage> {
-
   Future _data;
 
   Future getAbsences() async {
@@ -136,7 +118,10 @@ class _AbsencesPageState extends State<AbsencesPage> {
   @override 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( title: Text(widget.student.data['name']), ),
+      appBar: AppBar(
+       // leading: Icon(Icons.person_outline),
+        title: Text("${widget.student.data['name']}'s absences"),
+       ),
       body: Container(
         child: FutureBuilder(
           future: _data,
@@ -175,22 +160,7 @@ class DetailsPage extends StatefulWidget {
   @override
   _DetailsPageState createState() => _DetailsPageState();
 }
-
-  Widget box({width: 100.0, height: 100.0}) => Container(
-        width: width,
-        height: height,
-        color: Colors.grey,
-  );
-
 class _DetailsPageState extends State<DetailsPage> {
-
-  buildBox(double _width, double _height) {
-    return Container(
-      width: _width,
-      height: _height,
-      color: Colors.grey,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
