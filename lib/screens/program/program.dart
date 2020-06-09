@@ -23,9 +23,7 @@ class Program extends StatelessWidget {
           FlatButton.icon(
             icon: Icon(Icons.person),
             onPressed: () async {
-              await _auth.signOut();  // and does nothing else because there's a streaming 
-                                      // already hearing the value of User and when it is null
-                                      // it renders the Authenticate screen instead of Home
+              await _auth.signOut();
             },
             label: Text(translation('logout_button')),
           )
@@ -49,9 +47,25 @@ class MenuList extends StatefulWidget {
 class _MenuListState extends State<MenuList> {
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-      ],
+    return new Scaffold(
+      body: new Center(
+        child: new Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget> [
+            new RaisedButton(
+              child: new Text("Registar presenças"),
+              onPressed: null,
+            ),
+            new RaisedButton(
+              child: new Text("Justificativas"),
+              onPressed: null),
+          ] 
+        )
+      )
     );
+//    return ListView(
+//      children: <Widget>[
+//      ],
+//    );
   }
 }
