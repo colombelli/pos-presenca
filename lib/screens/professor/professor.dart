@@ -36,15 +36,11 @@ class _StudentListPageState extends State<StudentListPage> {
         }
       }
     );
-
-    for (int i=0; i<qn.documents.length; i++) {
-      print(qn.documents[i].documentID);
-    }
     return qn.documents;//.where((snapshot) => snapshot.data.containsValue("professor"));
   }
 
-  navigateToAbscences(DocumentSnapshot post) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => AbscencesPage(post: post,)));
+  navigateToAbscences(DocumentSnapshot student) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => AbscencesPage(student: student,)));
   }
 
   @override
@@ -57,7 +53,7 @@ class _StudentListPageState extends State<StudentListPage> {
   Widget build(BuildContext context) {
     return Container(
       child: FutureBuilder(
-        future: getStudents(),
+        future: _data,
         builder: (_, snapshot) {
 
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -74,11 +70,8 @@ class _StudentListPageState extends State<StudentListPage> {
                   title: Text(snapshot.data[index].data['name']),
                   onTap: () => navigateToAbscences(snapshot.data[index]),
                 );
-
             });
-
         }
-
       }),
     );
   }
@@ -87,9 +80,9 @@ class _StudentListPageState extends State<StudentListPage> {
 
 class AbscencesPage extends StatefulWidget {
 
-  final DocumentSnapshot post;
+  final DocumentSnapshot student;
 
-  AbscencesPage({this.post});
+  AbscencesPage({this.student});
 
   @override
   _AbscencesPageState createState() => _AbscencesPageState();
@@ -99,32 +92,39 @@ class _AbscencesPageState extends State<AbscencesPage> {
 
   Future _data;
 
-  Future getAbscences() async {
-    var firestone = Firestore.instance;
-    QuerySnapshot qn = await firestone.collection("abscences").getDocuments();
-    return qn.documents;//.where((snapshot) => snapshot.data.containsValue("professor"));
-  }
+
+//  Future getAbscences() async {
+//    var firestone = Firestore.instance;
+//    QuerySnapshot  qn;
+//    await firestone.collection("programs").where("name", isEqualTo: "PPGC").limit(1).getDocuments().then( (data) async {
+//      if (data.documents.length > 0){
+//          qn = await data.documents[0].reference.collection("students").getDocuments();
+//        }
+//      }
+//    );
+//    return qn.documents;//.where((snapshot) => snapshot.data.containsValue("professor"));
+//  }
 
   navigateToDetails(DocumentSnapshot post) {
     Navigator.push(context, MaterialPageRoute(builder: (context) => DetailsPage(post: post,)));
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _data = getAbscences();
-  }
+//  @override
+//  void initState() {
+//    super.initState();
+//    _data = getAbscences();
+//  }
 
   @override 
     Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.post.data['name']),
+        title: Text(widget.student.data['name']),
       ),
       body: Container(
         child: Card(
           child: ListTile(
-            title: Text(widget.post.data['professor']),
+            title: Text(widget.student.data['professor']),
           
           ),
         ),
