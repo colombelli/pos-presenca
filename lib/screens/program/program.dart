@@ -3,7 +3,7 @@ import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/services/auth.dart';
 import 'package:pg_check/screens/student/history.dart';
 
-class Program extends StatelessWidget {
+class ProgramHome extends StatelessWidget {
   final AuthService _auth = AuthService();
 
   @override

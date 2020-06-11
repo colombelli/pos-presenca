@@ -4,7 +4,7 @@ import 'package:pg_check/services/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
-class Professor extends StatelessWidget {
+class ProfessorHome extends StatelessWidget {
   final AuthService _auth = AuthService();
 
   @override

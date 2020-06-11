@@ -5,15 +5,12 @@ class DatabaseService {
   final String uid;
   DatabaseService({ this.uid });
 
-  final CollectionReference usersCollection = Firestore.instance.collection('users');
+  final CollectionReference userCollection = Firestore.instance.collection('users');
   final CollectionReference programsCollection = Firestore.instance.collection('programs');
   
   Stream<QuerySnapshot> get programs {
     return programsCollection.snapshots();
   }
 
-  Stream<QuerySnapshot> get users {
-    return usersCollection.snapshots();
-  }
 
 }
