@@ -1,10 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pg_check/app_localizations.dart';
+import 'package:pg_check/models/user.dart';
 import 'package:pg_check/services/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class ProfessorHome extends StatelessWidget {
+  final User userInfo;
+  ProfessorHome({ Key key, this.userInfo}): super(key: key);
+
   final AuthService _auth = AuthService();
 
   @override
@@ -31,24 +36,27 @@ class ProfessorHome extends StatelessWidget {
         ]
       ),
 
-      body: StudentListPage(),
+      body: StudentListPage(userInfo: userInfo),
     );
   }
 }
 
 class StudentListPage extends StatefulWidget {
+  final User userInfo;
+  StudentListPage({ Key key, this.userInfo}): super(key: key);
+
   @override
   _StudentListPageState createState() => _StudentListPageState();
 }
 
 class _StudentListPageState extends State<StudentListPage> {
-
   Future _data;
+
 
   Future getStudents() async {
     var firestone = Firestore.instance;
     QuerySnapshot  qn;
-    await firestone.collection("programs").where("name", isEqualTo: "PPGC").limit(1).getDocuments().then( (data) async {
+    await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (data) async {
       if (data.documents.length > 0){
           qn = await data.documents[0].reference.collection("students").getDocuments();
         }
