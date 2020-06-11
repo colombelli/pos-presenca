@@ -49,18 +49,27 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
 
   Future _data;
   EventList<Event> _markedDateMap = new EventList<Event>();
-
-  static String noEventText = "Você não faltou neste dia.";
-  String calendarText = noEventText;
+  bool _isInitialized;
+  DateTime _currentDate;
+  static String noAbsenceText = "Você não faltou neste dia";
+  static String futureDayText = "Esse dia ainda não foi registrado";
+  String calendarText = noAbsenceText;
 
   Future getAbsences() async {
+    String abCollection = "absences";
     var firestone = Firestore.instance;
     QuerySnapshot  qn;
+
+//    if (past == true) {
+//      abCollection = "absences";
+//    } else {
+//      abCollection = "pastAbsences";
+//    }
 
     await firestone.collection("programs").where("name", isEqualTo: "PPGC").limit(1).getDocuments().then( (data) async {
       if (data.documents.length > 0){
           await data.documents[0].reference.collection("students").where("name", isEqualTo: "cica").limit(1).getDocuments().then( (atad) async {
-            qn = await atad.documents[0].reference.collection('absences').orderBy('date').getDocuments();
+            qn = await atad.documents[0].reference.collection(abCollection).orderBy('date').getDocuments();
           });
         }
       }
@@ -97,17 +106,14 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
   @override
   void initState() {
     _data = getAbsences();
-
-    _markedDateMap.add(
-      new DateTime(2020, 5, 10),
-      new Event(
-        date: new DateTime(2019, 5, 10),
-        title: 'Falta não justificada',
-        icon: _eventIcon,
-      )
-    );
+    _isInitialized = false;
 
     super.initState();
+  }
+
+  int weekNumber(DateTime date) {
+    int dayOfYear = int.parse(DateFormat("D").format(date));
+    return ((dayOfYear - date.weekday + 10) / 7).floor();
   }
 
   void refresh(DateTime date) {
@@ -116,9 +122,13 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
       calendarText = _markedDateMap
           .getEvents(new DateTime(date.year, date.month, date.day))[0]
           .title;
+    } else if(weekNumber(date) < weekNumber(DateTime.now())){
+      calendarText = noAbsenceText; 
     } else{
-      calendarText = noEventText;
+      calendarText = futureDayText;
     }
+
+    _currentDate = date;
   }
 
   @override 
@@ -132,29 +142,31 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
               child: CircularProgressIndicator(), //Text("Loading..."),
             );
           } else if (snapshot.data.isNotEmpty) {
-              createAbsenceEvents(snapshot);
+              if (_isInitialized == false) {
+                createAbsenceEvents(snapshot);
+                _isInitialized = true;
+              }
               return SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
                     Card(
                       child: CalendarCarousel(
-                        weekendTextStyle: TextStyle(
-                          color: Colors.red,
-                        ),
-                        weekFormat: false,
-                        selectedDayBorderColor: Colors.green,
+                        selectedDateTime: _currentDate,
                         markedDatesMap: _markedDateMap,
-                        selectedDayButtonColor: Colors.blue[300],
-                        selectedDayTextStyle: TextStyle(color: Colors.green),
-                        todayBorderColor: Colors.transparent,
-                        weekdayTextStyle: TextStyle(color: Colors.black),
+                        weekFormat: false,
                         height: 350.0,
                         showHeader: true,
                         daysHaveCircularBorder: true,
-                        todayButtonColor: Colors.blue[100],
                         locale: 'pt',
+                        selectedDayButtonColor: Colors.blue[100],
+                        selectedDayBorderColor: Colors.transparent,
+                        todayBorderColor: Colors.transparent,
+                        todayButtonColor: Colors.white,
+                        todayTextStyle: TextStyle(color: Colors.red[900]),
+                        weekdayTextStyle: TextStyle(color: Colors.black),
+                        weekendTextStyle: TextStyle( color: Colors.red),
                         onDayPressed: (DateTime date, List<Event> events) {
-                           this.setState(() => refresh(date));
+                          this.setState(() => refresh(date));
                         },
                       )
                     ),
@@ -165,7 +177,6 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
                           child: Center(
                             child: Text(
                               calendarText,
-//                              style: Constants.textStyleCommonText,
                             )
                           )
                         )

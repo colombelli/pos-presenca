@@ -83,7 +83,7 @@ class _MenuListState extends State<MenuList> {
             ButtonTheme(
               minWidth: 300,
               child: new RaisedButton(
-                child: new Text("Visualizar Justificativas"),
+                child: new Text("Justificativas Pendentes"),
                 color: Colors.white,
                 textColor: Colors.blue[500],
                 disabledColor: Colors.white,
@@ -105,7 +105,7 @@ class _MenuListState extends State<MenuList> {
             ButtonTheme(
               minWidth: 300,
               child: new RaisedButton(
-                child: new Text("Visualizar faltas"),
+                child: new Text("Faltas da semana"),
                 color: Colors.white,
                 textColor: Colors.blue[500],
                 disabledColor: Colors.white,
@@ -118,7 +118,7 @@ class _MenuListState extends State<MenuList> {
                   //borderRadius: new BorderRadius.circular(0.0),
                   side: BorderSide(color: Colors.blue[400]),
                  ),
-                onPressed: () => navigateToPreviousAbsences(),
+                onPressed: null,
               ),
             ),
  
@@ -128,6 +128,7 @@ class _MenuListState extends State<MenuList> {
               minWidth: 300,
               child: new RaisedButton(
                 child: new Text("Processar faltas"),
+                color: Colors.white,
                 textColor: Colors.blue[500],
                 disabledColor: Colors.white,
                 disabledTextColor: Colors.blue[400],
@@ -139,7 +140,7 @@ class _MenuListState extends State<MenuList> {
                   //borderRadius: new BorderRadius.circular(0.0),
                   side: BorderSide(color: Colors.blue[400]),
                 ), 
-                onPressed: null,
+                onPressed: () => navigateToPreviousAbsences(),
               ),
             ),
           ]    
