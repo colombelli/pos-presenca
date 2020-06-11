@@ -49,9 +49,10 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
 
   Future _data;
   EventList<Event> _markedDateMap = new EventList<Event>();
-
-  static String noEventText = "Você não faltou neste dia.";
-  String calendarText = noEventText;
+  bool _isInitialized;
+  static String noAbsenceText = "Você não faltou neste dia";
+  static String futureDayText = "Esse dia ainda não foi registrado";
+  String calendarText = noAbsenceText;
 
   Future getAbsences() async {
     var firestone = Firestore.instance;
@@ -97,6 +98,7 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
   @override
   void initState() {
     _data = getAbsences();
+    _isInitialized = false;
 
     _markedDateMap.add(
       new DateTime(2020, 5, 10),
@@ -116,8 +118,10 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
       calendarText = _markedDateMap
           .getEvents(new DateTime(date.year, date.month, date.day))[0]
           .title;
+    } else if(date.isBefore(DateTime.now())){
+      calendarText = noAbsenceText; 
     } else{
-      calendarText = noEventText;
+      calendarText = futureDayText;
     }
   }
 
@@ -132,7 +136,10 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
               child: CircularProgressIndicator(), //Text("Loading..."),
             );
           } else if (snapshot.data.isNotEmpty) {
-              createAbsenceEvents(snapshot);
+              if (_isInitialized == false) {
+                createAbsenceEvents(snapshot);
+                _isInitialized = true;
+              }
               return SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
@@ -142,10 +149,8 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
                           color: Colors.red,
                         ),
                         weekFormat: false,
-                        selectedDayBorderColor: Colors.green,
                         markedDatesMap: _markedDateMap,
-                        selectedDayButtonColor: Colors.blue[300],
-                        selectedDayTextStyle: TextStyle(color: Colors.green),
+                        //selectedDayButtonColor: Colors.blue[300],
                         todayBorderColor: Colors.transparent,
                         weekdayTextStyle: TextStyle(color: Colors.black),
                         height: 350.0,
