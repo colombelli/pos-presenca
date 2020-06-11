@@ -40,7 +40,6 @@ class History extends StatelessWidget {
     );
   }
 }
-
 class PreviousAbsences extends StatefulWidget {
   @override
   _PreviousAbsencesState createState() => _PreviousAbsencesState();
@@ -49,33 +48,25 @@ class PreviousAbsences extends StatefulWidget {
 class _PreviousAbsencesState extends State<PreviousAbsences> {
 
   Future _data;
-  List<DocumentSnapshot> absences;
+  EventList<Event> _markedDateMap = new EventList<Event>();
 
   static String noEventText = "Você não faltou neste dia.";
   String calendarText = noEventText;
 
-  List<DocumentSnapshot> getAbsences2() {
-    var firestone = Firestore.instance;
-    QuerySnapshot  qn;
-    firestone.collection("programs").where("name", isEqualTo: "PPGC").limit(1).getDocuments().then( (data) {
-      if (data.documents.length > 0){
-          qn = data.documents[0].reference.collection("students").getDocuments() as QuerySnapshot; // adicionar filtro de nome
-        }
-      }
-    );
-    return qn.documents;
-  }
-
   Future getAbsences() async {
     var firestone = Firestore.instance;
     QuerySnapshot  qn;
+
     await firestone.collection("programs").where("name", isEqualTo: "PPGC").limit(1).getDocuments().then( (data) async {
       if (data.documents.length > 0){
-          qn = await data.documents[0].reference.collection("students").getDocuments(); // adicionar filtro de nome
+          await data.documents[0].reference.collection("students").where("name", isEqualTo: "cica").limit(1).getDocuments().then( (atad) async {
+            qn = await atad.documents[0].reference.collection('absences').orderBy('date').getDocuments();
+          });
         }
       }
     );
-    return qn.documents;
+
+    return qn.documents;//.where((snapshot) => snapshot.data.containsValue("professor"));
   }
 
   static Widget _eventIcon = new Container(
@@ -89,36 +80,24 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
     ),
   );
 
-  EventList<Event> _markedDateMap = new EventList<Event>(
-//    events: {
-//      new DateTime(2020, 6, 24): [
-//        new Event(
-//          date: new DateTime(2020, 6, 24),
-//          title: 'TEXTO DENTRO DE MARKED DATE MAP',
-//          icon: _eventIcon
-//        )
-//      ]
-//    }
-  );
+  void createAbsenceEvents(snapshot) {
+    // cria faltas
+    for (int i=0; i < snapshot.data.length; i++) {
+      _markedDateMap.add(
+        DateTime.parse(snapshot.data[i].data['date'].toDate().toString()),
+        new Event(
+          date: DateTime.parse(snapshot.data[i].data['date'].toDate().toString()),
+          title: snapshot.data[i].data['justified'] ? 'Falta justificada' : "Falta não justificada",
+          icon: _eventIcon,
+        )
+      );
+    }
+  }
 
   @override
   void initState() {
     _data = getAbsences();
-//    absences = getAbsences2(); 
-    // cria faltas
 
-//    for (int i=0; i < absences.length; i++) {
-//      if (absences[i].data['name'] == "cica"){
-//        _markedDateMap.add(
-//          DateTime.parse(absences[i].data['date'].toDate().toString()),
-//          new Event(
-//            date: DateTime.parse(absences[i].data['date'].toDate().toString()),
-//            title: absences[i].data['justified'] ? 'Falta justificada' : "Falta não justificada",
-//            icon: _eventIcon,
-//          )
-//         );
-//      }
-//    }
     _markedDateMap.add(
       new DateTime(2020, 5, 10),
       new Event(
@@ -146,13 +125,14 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
   Widget build(BuildContext context) {
     return Container(
       child: FutureBuilder(
-        future: getAbsences(), //_data,
+        future: _data,
         builder: (_, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(), //Text("Loading..."),
             );
           } else if (snapshot.data.isNotEmpty) {
+              createAbsenceEvents(snapshot);
               return SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
