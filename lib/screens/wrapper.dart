@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/models/user.dart';
 import 'package:pg_check/screens/authenticate/authenticate.dart';
 import 'package:pg_check/screens/professor/professor.dart';
@@ -7,6 +6,7 @@ import 'package:pg_check/screens/program/program.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pg_check/screens/student/student_home.dart';
+import 'package:pg_check/shared/loading.dart';
 
 
 class Wrapper extends StatelessWidget {
@@ -40,7 +40,7 @@ class Wrapper extends StatelessWidget {
       stream: Firestore.instance.collection('users').document(user.uid).snapshots(),
       builder: (context, snapshot){
         if(!snapshot.hasData){
-          return new Text("loading"); //todo: add loading widget
+          return Loading(); 
         } else {
           var userDocument = snapshot.data;
           final userInfo = User(uid: user.uid, type: userDocument['type'], name: userDocument['name']);
