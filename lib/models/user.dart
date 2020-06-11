@@ -3,8 +3,9 @@ class User {
   final String uid;
   final String type;
   final String name;
+  final String program;
   
-  User({ this.uid, this.type, this.name});
+  User({ this.uid, this.type, this.name, this.program});
 
 }
 
@@ -24,15 +25,3 @@ class Student extends User {
 
 }
 
-class Professor extends User {
-
-  final program;
-
-  Professor({
-    uid,
-    type,
-    name,
-    this.program,
-  }) : super(uid: uid, type: type, name: name);
-
-}

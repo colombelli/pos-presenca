@@ -43,7 +43,7 @@ class Wrapper extends StatelessWidget {
           return Loading(); 
         } else {
           var userDocument = snapshot.data;
-          final userInfo = User(uid: user.uid, type: userDocument['type'], name: userDocument['name']);
+          final userInfo = User(uid: user.uid, type: userDocument['type'], name: userDocument['name'], program: userDocument['program']);
           
           return getUserWidget(userInfo);
         }
