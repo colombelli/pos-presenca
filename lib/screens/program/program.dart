@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/services/auth.dart';
 import 'package:pg_check/screens/student/history.dart';
+import 'package:pg_check/models/user.dart';
 
 class ProgramHome extends StatelessWidget {
+  final User userInfo;
+  ProgramHome({ Key key, this.userInfo}): super(key: key);
+
   final AuthService _auth = AuthService();
 
   @override
@@ -43,6 +47,7 @@ class MenuList extends StatefulWidget {
 }
 
 class _MenuListState extends State<MenuList> {
+
 
   navigateToPreviousAbsences() {
     Navigator.push(context, MaterialPageRoute(builder: (context) => History()));

@@ -11,21 +11,19 @@ import 'package:pg_check/shared/loading.dart';
 
 class Wrapper extends StatelessWidget {
 
-
   getUserWidget(userInfo) {
 
     if (userInfo.type == "student"){
       return StudentHome(userInfo: userInfo);
 
     } else if (userInfo.type == "program"){
-      return ProgramHome();
+      return ProgramHome(userInfo: userInfo);
 
     } else if (userInfo.type == "professor") {
-      return ProfessorHome();
+      return ProfessorHome(userInfo: userInfo);
     }
 
   }
-  
 
   @override
   Widget build(BuildContext context) {
