@@ -25,6 +25,7 @@ dependencies:
     sdk: flutter
   html: ^0.14.0+3
   intl: ^0.16.1
+  flutter_calendar_carousel: ^1.4.12
 
   flutter_localizations:
     sdk: flutter

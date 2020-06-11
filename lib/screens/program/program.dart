@@ -1,9 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/services/auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
+import 'package:pg_check/screens/student/history.dart';
 
 class Program extends StatelessWidget {
   final AuthService _auth = AuthService();
@@ -45,6 +43,11 @@ class MenuList extends StatefulWidget {
 }
 
 class _MenuListState extends State<MenuList> {
+
+  navigateToPreviousAbsences() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => History()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -115,7 +118,7 @@ class _MenuListState extends State<MenuList> {
                   //borderRadius: new BorderRadius.circular(0.0),
                   side: BorderSide(color: Colors.blue[400]),
                  ),
-                onPressed: null,
+                onPressed: () => navigateToPreviousAbsences(),
               ),
             ),
  
