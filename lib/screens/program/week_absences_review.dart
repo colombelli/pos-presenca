@@ -70,7 +70,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
       child: new Column(
         children: <Widget>[
           new Container(
-            color: Colors.blue,
+            color: Colors.blue[50],
             padding: new EdgeInsets.symmetric(horizontal: 5.0),
             child: new Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -80,13 +80,13 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                       height: 50.0,
                       width: 50.0,
                       decoration: new BoxDecoration(
-                        color: Colors.orange,
+                        color: Colors.blue[250],
                         shape: BoxShape.circle,
                       ),
                       child: new Center(
                         child: new Icon(
                           expandFlag ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                          color: Colors.white,
+                          color: Colors.blue[400],
                           size: 30.0,
                         ),
                       ),
@@ -98,7 +98,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                     }),
                 new Text(
                   widget.title,
-                  style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                  style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                 )
               ],
             ),
