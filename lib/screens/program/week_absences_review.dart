@@ -47,7 +47,7 @@ class WeekAbsencesList extends StatelessWidget {
         return new ExpandableListView(title: "Title $index");
       },
       itemCount: 5,
-      );
+    );
   }
 }
 
