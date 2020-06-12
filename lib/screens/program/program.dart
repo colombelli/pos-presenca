@@ -33,7 +33,7 @@ class ProgramHome extends StatelessWidget {
           )
         ]
       ),
-      body: MenuList(),
+      body: MenuList(userInfo: this.userInfo),
     );
   }
 }
@@ -44,6 +44,10 @@ class ProgramHome extends StatelessWidget {
 //- view absences
 
 class MenuList extends StatefulWidget {
+
+  final User userInfo;
+  MenuList({ Key key, this.userInfo}): super(key: key);
+
   @override
   _MenuListState createState() => _MenuListState();
 }
@@ -55,7 +59,7 @@ class _MenuListState extends State<MenuList> {
   }
 
   navigateToPresenceRegistration() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => PresenceRegistration()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => PresenceRegistration(userInfo: widget.userInfo)));
   }
   
   navigateToWeekAbsencesReview() {
