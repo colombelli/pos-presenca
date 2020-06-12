@@ -3,6 +3,7 @@ import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/services/auth.dart';
 import 'package:pg_check/screens/student/history.dart';
 import 'package:pg_check/models/user.dart';
+import 'package:pg_check/screens/program/presence_reg.dart';
 
 class ProgramHome extends StatelessWidget {
   final User userInfo;
@@ -53,6 +54,10 @@ class _MenuListState extends State<MenuList> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => History()));
   }
 
+  navigateToPresenceRegistration() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => PresenceRegistration()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -79,7 +84,7 @@ class _MenuListState extends State<MenuList> {
                   //borderRadius: new BorderRadius.circular(0.0),
                   side: BorderSide(color: Colors.blue[400]),
                 ),
-                onPressed: null,
+                onPressed: () => navigateToPresenceRegistration(),
               ),
             ),
   
