@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/services/auth.dart';
+import 'package:pg_check/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
@@ -13,6 +14,8 @@ import 'package:intl/intl.dart';
 
 class WeekAbsencesReview extends StatelessWidget {
   final AuthService _auth = AuthService();
+  final User userInfo;
+  WeekAbsencesReview({ Key key, this.userInfo}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,27 +37,74 @@ class WeekAbsencesReview extends StatelessWidget {
           )
         ]
       ),
-      body: WeekAbsencesList(),
+      body: WeekAbsencesList(userInfo: userInfo,),
     );
   }
 }
+class WeekAbsencesList extends StatefulWidget {
+  final User userInfo;
+  WeekAbsencesList({ Key key, this.userInfo}): super(key: key);
 
-class WeekAbsencesList extends StatelessWidget {
+  @override
+  _WeekAbsencesListState createState() => _WeekAbsencesListState();
+}
+
+class _WeekAbsencesListState extends State<WeekAbsencesList> {
+  Future _data;
+
+  Future getStudents() async { // gets all students (yeah a lot more data than necssary sue me)
+    var firestone = Firestore.instance;
+    QuerySnapshot  qn;
+
+    await firestone.collection("programs").where("name", isEqualTo: "PPGC").limit(1).getDocuments().then( (data) async { //! Muda query de programa
+      if (data.documents.length > 0){
+          await data.documents[0].reference.collection("students").getDocuments();
+        }
+    });
+
+    return qn.documents;//.where((snapshot) => snapshot.data.containsValue("professor"));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _data = getStudents();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return new ListView.builder(
-      itemBuilder: (BuildContext context, int index) {
-        return new ExpandableListView(title: "Title $index");
-      },
-      itemCount: 5,
+    return Container(
+      child: FutureBuilder(
+        future: _data,
+        builder: (_, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(), //Text("Loading..."),
+            );
+          } else if (snapshot.data.isNotEmpty) {
+            return ListView.builder(
+              itemBuilder: (BuildContext context, int index) {
+                return new ExpandableListView(
+                  student: "Title $index",
+                  daysAbsent: snapshot.data['weekAbsences'],
+                );
+              },
+              itemCount: 5,
+            );
+          } else {
+            return Center(child: Text("Não existem faltas registradas nesta semana."),);
+          }
+        }
+      ),
     );
   }
 }
 
 class ExpandableListView extends StatefulWidget {
-  final String title;
+  final String student;
+  final String daysAbsent;
 
-  const ExpandableListView({Key key, this.title}) : super(key: key);
+  const ExpandableListView({Key key, this.student, this.daysAbsent}) : super(key: key);
 
   @override
   _ExpandableListViewState createState() => new _ExpandableListViewState();

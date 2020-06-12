@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/services/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:pg_check/models/user.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel;
 import 'package:flutter_calendar_carousel/classes/event.dart';
@@ -15,6 +16,8 @@ import 'package:flutter_calendar_carousel/classes/event_list.dart';
 
 class History extends StatelessWidget {
   final AuthService _auth = AuthService();
+  final User userInfo;
+  History({ Key key, this.userInfo}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +40,15 @@ class History extends StatelessWidget {
         ]
       ),
 
-      body: PreviousAbsences(),
+      body: PreviousAbsences(userInfo: userInfo),
     );
   }
 }
 class PreviousAbsences extends StatefulWidget {
+  final User userInfo;
+  PreviousAbsences({ Key key, this.userInfo}): super(key: key);
   @override
+
   _PreviousAbsencesState createState() => _PreviousAbsencesState();
 }
 
@@ -67,10 +73,10 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
 //      abCollection = "pastAbsences";
 //    }
 
-    await firestone.collection("programs").where("name", isEqualTo: "PPGC").limit(1).getDocuments().then( (data) async {
+    await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (data) async {
       if (data.documents.length > 0){
-          await data.documents[0].reference.collection("students").where("name", isEqualTo: "cica").limit(1).getDocuments().then( (atad) async {
-            qn = await atad.documents[0].reference.collection(abCollection).orderBy('date').getDocuments();
+          await data.documents[0].reference.collection("students").where("name", isEqualTo: "cica").limit(1).getDocuments().then( (atad) async { // ! Mudar para pesquisar pelo nome do usuario
+            qn = await atad.documents[0].reference.collection(abCollection).orderBy('date').getDocuments();                                      // ! quando integrar com a página de usuário
           });
         }
       }
