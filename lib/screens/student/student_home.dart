@@ -3,13 +3,8 @@ import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/services/auth.dart';
 import 'package:pg_check/models/user.dart';
 import 'package:pg_check/shared/loading.dart';
+import 'package:pg_check/screens/student/presence_reg.dart';
 
-class Choice {
-  const Choice({this.title, this.icon});
-
-  final String title;
-  final IconData icon;
-}
 
 class StudentHome extends StatefulWidget {
 
@@ -99,6 +94,10 @@ class _StudentHomeState extends State<StudentHome> {
                 icon: Icons.home,
                 text: 'Home',
                 newBodyWidget: new Text("some home content here")),
+                _createDrawerItem(
+                icon: Icons.person_add,
+                text: 'Presence Registration',
+                newBodyWidget: StudentPresenceRegistration()),
               _createDrawerItem(
                 icon: Icons.history,
                 text: 'History',

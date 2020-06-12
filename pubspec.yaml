@@ -37,6 +37,7 @@ dependencies:
   provider: ^4.1.1
   flutter_spinkit: ^4.1.2+1
   qr_flutter: ^3.1.0
+  barcode_scan: ^3.0.1
   uuid: 2.0.4
 
 dev_dependencies:
