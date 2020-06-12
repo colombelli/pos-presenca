@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pg_check/app_localizations.dart';
+import 'package:pg_check/screens/program/week_absences_review.dart';
 import 'package:pg_check/services/auth.dart';
-import 'package:pg_check/screens/student/history.dart';
 import 'package:pg_check/models/user.dart';
+import 'package:pg_check/screens/student/history.dart';
 
 class ProgramHome extends StatelessWidget {
   final User userInfo;
@@ -48,9 +49,12 @@ class MenuList extends StatefulWidget {
 
 class _MenuListState extends State<MenuList> {
 
-
-  navigateToPreviousAbsences() {
+  navigateToPreviousAbsencesCalendar() {
     Navigator.push(context, MaterialPageRoute(builder: (context) => History()));
+  }
+
+  navigateToWeekAbsencesReview() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => WeekAbsencesReview()));
   }
 
   @override
@@ -123,7 +127,7 @@ class _MenuListState extends State<MenuList> {
                   //borderRadius: new BorderRadius.circular(0.0),
                   side: BorderSide(color: Colors.blue[400]),
                  ),
-                onPressed: null,
+                onPressed: () => navigateToWeekAbsencesReview(),
               ),
             ),
  
@@ -145,7 +149,7 @@ class _MenuListState extends State<MenuList> {
                   //borderRadius: new BorderRadius.circular(0.0),
                   side: BorderSide(color: Colors.blue[400]),
                 ), 
-                onPressed: () => navigateToPreviousAbsences(),
+                onPressed: () => navigateToPreviousAbsencesCalendar(),
               ),
             ),
           ]    

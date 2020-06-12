@@ -12,6 +12,7 @@ import 'package:flutter_calendar_carousel/classes/event_list.dart';
   Ela aparece quando, a partir do menu de um aluno logado, ele clica em visualizar histórico
 */
 
+
 class History extends StatelessWidget {
   final AuthService _auth = AuthService();
 
@@ -158,7 +159,7 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
                         showHeader: true,
                         daysHaveCircularBorder: true,
                         locale: 'pt',
-                        selectedDayButtonColor: Colors.blue[100],
+                        selectedDayButtonColor: Colors.blue[100], 
                         selectedDayBorderColor: Colors.transparent,
                         todayBorderColor: Colors.transparent,
                         todayButtonColor: Colors.white,
