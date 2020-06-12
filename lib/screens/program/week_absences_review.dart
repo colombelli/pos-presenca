@@ -34,181 +34,126 @@ class WeekAbsencesReview extends StatelessWidget {
           )
         ]
       ),
-
-      body: WeekAbsences(),
+      body: WeekAbsencesList(),
     );
   }
 }
 
-class WeekAbsences extends StatefulWidget {
+class WeekAbsencesList extends StatelessWidget {
   @override
-  _WeekAbsencesState createState() => _WeekAbsencesState();
+  Widget build(BuildContext context) {
+    return new ListView.builder(
+      itemBuilder: (BuildContext context, int index) {
+        return new ExpandableListView(title: "Title $index");
+      },
+      itemCount: 5,
+      );
+  }
 }
 
-class _WeekAbsencesState extends State<WeekAbsences> {
+class ExpandableListView extends StatefulWidget {
+  final String title;
 
-  Future _data;
-  
-  Future getStudents() async {
-    var firestone = Firestore.instance;
-    QuerySnapshot  qn;
-    await firestone.collection("programs").where("name", isEqualTo: "PPGC").limit(1).getDocuments().then( (data) async { // ! Mudar programa para refletir usuário
-      if (data.documents.length > 0){
-        qn = await data.documents[0].reference.collection("students").getDocuments();
-        }
-    } );
-    return qn.documents;//.where((snapshot) => snapshot.data.containsValue("professor"));
-  }
-
-  navigateToAbsences(DocumentSnapshot student) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => AbsencesPage(student: student,)));
-  }
+  const ExpandableListView({Key key, this.title}) : super(key: key);
 
   @override
-  void initState() {
-    super.initState();
-    _data = getStudents();
-  }
+  _ExpandableListViewState createState() => new _ExpandableListViewState();
+}
+
+class _ExpandableListViewState extends State<ExpandableListView> {
+  bool expandFlag = false;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: FutureBuilder(
-        future: _data,
-        builder: (_, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(), //Text("Loading..."),
-            );
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data.length,
-              itemBuilder: (_, index) {
-
-                print(snapshot.data[index].reference.collection("weekAbsences").snapshots().length.toString());
-
-                if (snapshot.data[index].reference.collection("weekAbsences").snapshots().length != 0) {
-                  return Card(
-                    child: ListTile(
-                      leading: Icon(Icons.person_outline),
-                      title: Text(snapshot.data[index].data['name']),
-                      onTap: () => navigateToAbsences(snapshot.data[index]),
+    return new Container(
+      margin: new EdgeInsets.symmetric(vertical: 1.0),
+      child: new Column(
+        children: <Widget>[
+          new Container(
+            color: Colors.blue,
+            padding: new EdgeInsets.symmetric(horizontal: 5.0),
+            child: new Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                new IconButton(
+                    icon: new Container(
+                      height: 50.0,
+                      width: 50.0,
+                      decoration: new BoxDecoration(
+                        color: Colors.orange,
+                        shape: BoxShape.circle,
+                      ),
+                      child: new Center(
+                        child: new Icon(
+                          expandFlag ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                          color: Colors.white,
+                          size: 30.0,
+                        ),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        expandFlag = !expandFlag;
+                      });
+                    }),
+                new Text(
+                  widget.title,
+                  style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                )
+              ],
+            ),
+          ),
+          new ExpandableContainer(
+              expanded: expandFlag,
+              child: new ListView.builder(
+                itemBuilder: (BuildContext context, int index) {
+                  return new Container(
+                    decoration:
+                        new BoxDecoration(border: new Border.all(width: 1.0, color: Colors.grey), color: Colors.black),
+                    child: new ListTile(
+                      title: new Text(
+                        "Cool $index",
+                        style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
+                      leading: new Icon(
+                        Icons.local_pizza,
+                        color: Colors.white,
+                      ),
                     ),
                   );
-                }
-            });
-        }
-      }),
-    );
-  }
-}
-class AbsencesPage extends StatefulWidget {
-  final DocumentSnapshot student;
-  AbsencesPage({this.student});
-  @override
-  _AbsencesPageState createState() => _AbsencesPageState();
-}
-
-class _AbsencesPageState extends State<AbsencesPage> {
-  Future _data;
-
-  Future getAbsences() async {
-    var firestone = Firestore.instance;
-    QuerySnapshot  qn;
-
-    await firestone.collection("programs").where("name", isEqualTo: "PPGC").limit(1).getDocuments().then( (data) async {
-      if (data.documents.length > 0){
-          await data.documents[0].reference.collection("students").where("name", isEqualTo: widget.student.data['name']).limit(1).getDocuments().then( (atad) async {
-            qn = await atad.documents[0].reference.collection('weekAbsences').orderBy('date').getDocuments();
-          });
-        }
-      }
-    );
-
-    return qn.documents;//.where((snapshot) => snapshot.data.containsValue("professor"));
-  }
-
-  navigateToDetails(DocumentSnapshot absence) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => DetailsPage(absence: absence,)));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _data = getAbsences();
-  }
-
-  @override 
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-       // leading: Icon(Icons.person_outline),
-        title: Text("Faltas de ${widget.student.data['name']}"),
-       ),
-      body: Container(
-        child: FutureBuilder(
-          future: _data,
-          builder: (_, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                
-                child: CircularProgressIndicator(), //Text("Loading..."),
-              );
-            } else if (snapshot.data.isNotEmpty) {
-              return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (_, index){
-                    return Card(
-                      child: ListTile(
-                        leading: Icon(Icons.calendar_today),
-                        title: Text(DateFormat('yMd').format(DateTime.parse(snapshot.data[index].data['date'].toDate().toString()))),
-                        onTap: () => navigateToDetails(snapshot.data[index]),
-                      ),
-                    );
-                });
-          } else {
-                //return Center(child: Text("There are no registered absences for that student"),);
-                return Center(child: Text("Não existem faltas registradas para este aluno."),);
-          }
-        }),
+                },
+                itemCount: 15,
+              ))
+        ],
       ),
     );
   }
 }
 
-class DetailsPage extends StatefulWidget {
-  final DocumentSnapshot absence;
+class ExpandableContainer extends StatelessWidget {
+  final bool expanded;
+  final double collapsedHeight;
+  final double expandedHeight;
+  final Widget child;
 
-  DetailsPage({this.absence});
-
-  @override
-  _DetailsPageState createState() => _DetailsPageState();
-}
-class _DetailsPageState extends State<DetailsPage> {
+  ExpandableContainer({
+    @required this.child,
+    this.collapsedHeight = 0.0,
+    this.expandedHeight = 300.0,
+    this.expanded = true,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(DateFormat('yMd').format(DateTime.parse(widget.absence.data['date'].toDate().toString()))),
-      ),
-      body: ListView(
-        children: <Widget> [
-          Card(
-            child: ListTile(
-              leading: Icon(widget.absence.data['justified'] ? Icons.sentiment_satisfied: Icons.sentiment_dissatisfied),
-              title: Text("Justificado:"),
-              subtitle: Text( (widget.absence.data['justified']) ? "Sim" : "Não" ),
-            ),
-          ),
-          Card(
-            child: ListTile(
-              leading: Icon(widget.absence.data['justified'] ? Icons.message: Icons.speaker_notes_off),
-              title: Text("Justificativa:"),
-              subtitle: Text(widget.absence.data['justification']),
-            ),
-          ),
-        ]
+    double screenWidth = MediaQuery.of(context).size.width;
+    return new AnimatedContainer(
+      duration: new Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+      width: screenWidth,
+      height: expanded ? expandedHeight : collapsedHeight,
+      child: new Container(
+        child: child,
+        decoration: new BoxDecoration(border: new Border.all(width: 1.0, color: Colors.blue)),
       ),
     );
   }
