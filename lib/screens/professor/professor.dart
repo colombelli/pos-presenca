@@ -58,7 +58,7 @@ class _StudentListPageState extends State<StudentListPage> {
     QuerySnapshot  qn;
     await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (data) async {
       if (data.documents.length > 0){
-          qn = await data.documents[0].reference.collection("students").getDocuments();
+          qn = await data.documents[0].reference.collection("students").where("professor", isEqualTo: widget.userInfo.name).getDocuments();
         }
       }
     );
@@ -66,7 +66,7 @@ class _StudentListPageState extends State<StudentListPage> {
   }
 
   navigateToAbsences(DocumentSnapshot student) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => AbsencesPage(student: student,)));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => AbsencesPage(student: student, userInfo: widget.userInfo)));
   }
 
   @override
@@ -104,8 +104,11 @@ class _StudentListPageState extends State<StudentListPage> {
   }
 }
 class AbsencesPage extends StatefulWidget {
+  final User userInfo;
+  AbsencesPage({ this.student, key, this.userInfo}): super(key: key);
+
   final DocumentSnapshot student;
-  AbsencesPage({this.student});
+
   @override
   _AbsencesPageState createState() => _AbsencesPageState();
 }
@@ -117,7 +120,7 @@ class _AbsencesPageState extends State<AbsencesPage> {
     var firestone = Firestore.instance;
     QuerySnapshot  qn;
 
-    await firestone.collection("programs").where("name", isEqualTo: "PPGC").limit(1).getDocuments().then( (data) async {
+    await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (data) async {
       if (data.documents.length > 0){
           await data.documents[0].reference.collection("students").where("name", isEqualTo: widget.student.data['name']).limit(1).getDocuments().then( (atad) async {
             qn = await atad.documents[0].reference.collection('absences').orderBy('date').getDocuments();
@@ -130,7 +133,7 @@ class _AbsencesPageState extends State<AbsencesPage> {
   }
 
   navigateToDetails(DocumentSnapshot absence) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => DetailsPage(absence: absence,)));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => DetailsPage(absence: absence, userInfo: widget.userInfo)));
   }
 
   @override
@@ -179,8 +182,8 @@ class _AbsencesPageState extends State<AbsencesPage> {
 
 class DetailsPage extends StatefulWidget {
   final DocumentSnapshot absence;
-
-  DetailsPage({this.absence});
+  final User userInfo;
+  DetailsPage({ this.absence, key, this.userInfo}): super(key: key);
 
   @override
   _DetailsPageState createState() => _DetailsPageState();
