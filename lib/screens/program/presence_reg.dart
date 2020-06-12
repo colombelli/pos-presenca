@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pg_check/app_localizations.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'dart:async';
 
 class PresenceRegistration extends StatefulWidget {
   @override
@@ -12,6 +13,7 @@ class _PresenceRegistrationState extends State<PresenceRegistration> {
   GlobalKey globalKey = new GlobalKey();
   String _dataString = "Hello from this QR";
   
+
   @override
   Widget build(BuildContext context) {
 

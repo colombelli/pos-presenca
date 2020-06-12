@@ -4,18 +4,12 @@ import 'package:pg_check/services/auth.dart';
 import 'package:pg_check/models/user.dart';
 import 'package:pg_check/shared/loading.dart';
 
-
-
 class Choice {
   const Choice({this.title, this.icon});
 
   final String title;
   final IconData icon;
 }
-
-
-
-
 
 class StudentHome extends StatefulWidget {
 
