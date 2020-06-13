@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/services/auth.dart';
+import 'package:pg_check/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
@@ -13,6 +14,8 @@ import 'package:intl/intl.dart';
 
 class WeekAbsencesReview extends StatelessWidget {
   final AuthService _auth = AuthService();
+  final User userInfo;
+  WeekAbsencesReview({ Key key, this.userInfo}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,34 +37,45 @@ class WeekAbsencesReview extends StatelessWidget {
           )
         ]
       ),
-
-      body: WeekAbsences(),
+      body: WeekAbsencesList(userInfo: userInfo,),
     );
   }
 }
 
-class WeekAbsences extends StatefulWidget {
+class WeekAbsencesList extends StatefulWidget {
+  final User userInfo;
+  WeekAbsencesList({ Key key, this.userInfo}): super(key: key);
+
   @override
-  _WeekAbsencesState createState() => _WeekAbsencesState();
+  _WeekAbsencesListState createState() => _WeekAbsencesListState();
 }
 
-class _WeekAbsencesState extends State<WeekAbsences> {
-
+class _WeekAbsencesListState extends State<WeekAbsencesList> {
   Future _data;
-  
+
   Future getStudents() async {
     var firestone = Firestore.instance;
     QuerySnapshot  qn;
-    await firestone.collection("programs").where("name", isEqualTo: "PPGC").limit(1).getDocuments().then( (data) async { // ! Mudar programa para refletir usuário
-      if (data.documents.length > 0){
-        qn = await data.documents[0].reference.collection("students").getDocuments();
-        }
-    } );
-    return qn.documents;//.where((snapshot) => snapshot.data.containsValue("professor"));
-  }
 
-  navigateToAbsences(DocumentSnapshot student) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => AbsencesPage(student: student,)));
+    List<DocumentSnapshot> dsl = <DocumentSnapshot>[];
+
+    await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (data) async {
+      if (data.documents.length > 0){
+          qn = await data.documents[0].reference.collection("students").getDocuments().then( (adat) async {
+            if (adat.documents.length > 0) {
+              for (var doc in adat.documents) {
+                final snap = await doc.reference.collection('weekAbsences').where('date', isLessThan: Timestamp.fromDate(DateTime.now())).getDocuments();
+                if ( snap.documents.length != 0) {
+                  dsl.add(doc);
+                }
+              }
+            }
+          });
+        }
+      }
+    );
+    //return qn.documents;
+    return dsl;
   }
 
   @override
@@ -80,43 +94,43 @@ class _WeekAbsencesState extends State<WeekAbsences> {
             return Center(
               child: CircularProgressIndicator(), //Text("Loading..."),
             );
-          } else {
+          } else if (snapshot.data.isNotEmpty) {
             return ListView.builder(
+              itemBuilder: (BuildContext context, int index) {
+                return new ExpandableListView(
+                  student: snapshot.data[index],
+                  userInfo: widget.userInfo,
+                );
+              },
               itemCount: snapshot.data.length,
-              itemBuilder: (_, index) {
-
-                print(snapshot.data[index].reference.collection("weekAbsences").snapshots().length.toString());
-
-                if (snapshot.data[index].reference.collection("weekAbsences").snapshots().length != 0) {
-                  return Card(
-                    child: ListTile(
-                      leading: Icon(Icons.person_outline),
-                      title: Text(snapshot.data[index].data['name']),
-                      onTap: () => navigateToAbsences(snapshot.data[index]),
-                    ),
-                  );
-                }
-            });
+            );
+          } else {
+            return Center(child: Text("Não existem faltas registradas nesta semana."),);
+          }
         }
-      }),
+      ),
     );
   }
 }
-class AbsencesPage extends StatefulWidget {
+
+class ExpandableListView extends StatefulWidget {
   final DocumentSnapshot student;
-  AbsencesPage({this.student});
+  final User userInfo;
+
+  const ExpandableListView({Key key, this.student, this.userInfo}) : super(key: key);
+
   @override
-  _AbsencesPageState createState() => _AbsencesPageState();
+  _ExpandableListViewState createState() => new _ExpandableListViewState();
 }
 
-class _AbsencesPageState extends State<AbsencesPage> {
+class _ExpandableListViewState extends State<ExpandableListView> {
+  bool expandFlag = false;
   Future _data;
 
   Future getAbsences() async {
     var firestone = Firestore.instance;
     QuerySnapshot  qn;
-
-    await firestone.collection("programs").where("name", isEqualTo: "PPGC").limit(1).getDocuments().then( (data) async {
+    await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (data) async {
       if (data.documents.length > 0){
           await data.documents[0].reference.collection("students").where("name", isEqualTo: widget.student.data['name']).limit(1).getDocuments().then( (atad) async {
             qn = await atad.documents[0].reference.collection('weekAbsences').orderBy('date').getDocuments();
@@ -124,12 +138,7 @@ class _AbsencesPageState extends State<AbsencesPage> {
         }
       }
     );
-
     return qn.documents;//.where((snapshot) => snapshot.data.containsValue("professor"));
-  }
-
-  navigateToDetails(DocumentSnapshot absence) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => DetailsPage(absence: absence,)));
   }
 
   @override
@@ -138,77 +147,129 @@ class _AbsencesPageState extends State<AbsencesPage> {
     _data = getAbsences();
   }
 
-  @override 
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-       // leading: Icon(Icons.person_outline),
-        title: Text("Faltas de ${widget.student.data['name']}"),
-       ),
-      body: Container(
-        child: FutureBuilder(
-          future: _data,
-          builder: (_, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                
-                child: CircularProgressIndicator(), //Text("Loading..."),
-              );
-            } else if (snapshot.data.isNotEmpty) {
-              return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (_, index){
-                    return Card(
-                      child: ListTile(
-                        leading: Icon(Icons.calendar_today),
-                        title: Text(DateFormat('yMd').format(DateTime.parse(snapshot.data[index].data['date'].toDate().toString()))),
-                        onTap: () => navigateToDetails(snapshot.data[index]),
+    return new Container(
+      margin: new EdgeInsets.symmetric(vertical: 1.0),
+      child: new Column(
+        children: <Widget>[
+          new Container(
+            color: Colors.blue[50],
+            padding: new EdgeInsets.symmetric(horizontal: 5.0),
+            child: new Row(
+             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                new Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                new Icon(
+                  Icons.person,
+                ),
+                new Text(
+                  "    ${widget.student.data['name']}",
+                  style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+                  ],
+                ),
+                new IconButton(
+                    icon: new Container(
+                      height: 50.0,
+                      width: 50.0,
+                      decoration: new BoxDecoration(
+                        color: Colors.blue[250],
+                        shape: BoxShape.circle,
+                      ),
+                      child: new Center(
+                        child: new Icon(
+                          expandFlag ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                          color: Colors.blue[400],
+                          size: 27.0,
+                        ),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        expandFlag = !expandFlag;
+                      });
+                    }),
+              ],
+            ),
+          ),
+          new FutureBuilder(
+              future: _data,
+              builder: (_, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return ExpandableContainer(
+                    expanded: expandFlag,
+                    expandedHeight: 69,
+                    child: Center(
+                      child: CircularProgressIndicator(), 
+                    ),
+                  );
+                } else if (snapshot.data.isNotEmpty) {
+                    return ExpandableContainer(
+                      expanded: expandFlag,
+                      expandedHeight: snapshot.data.length*59.0,
+                      child: ListView.builder(
+                        itemCount: snapshot.data.length, 
+                        itemBuilder: (BuildContext context, int index) {
+                          return new Container(
+                            decoration:
+                                new BoxDecoration(border: new Border.all(width: 1.0, color: Colors.grey), color: Colors.blue[50]),
+                            child: new ListTile(
+                              title: new Text(
+                                //DateTime.parse(snapshot.data[index].data['date'].toDate().toString()).weekday.toString(),
+                                DateFormat('yMd').format(DateTime.parse(snapshot.data[index].data['date'].toDate().toString())),
+                                style: new TextStyle(color: Colors.black),
+                              ),
+                              leading: new Icon(
+                                Icons.date_range,
+                                color: Colors.grey[900],
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     );
-                });
-          } else {
-                //return Center(child: Text("There are no registered absences for that student"),);
-                return Center(child: Text("Não existem faltas registradas para este aluno."),);
-          }
-        }),
+                } else {
+                  return ExpandableContainer( 
+                    expanded: expandFlag,
+                    expandedHeight: 69.0,
+                    child :Center(child: Text("Não existem faltas registradas nesta semana."),),
+                  );
+                }
+              }
+            ),
+        ],
       ),
     );
   }
 }
 
-class DetailsPage extends StatefulWidget {
-  final DocumentSnapshot absence;
+class ExpandableContainer extends StatelessWidget {
+  final bool expanded;
+  final double collapsedHeight;
+  final double expandedHeight;
+  final Widget child;
 
-  DetailsPage({this.absence});
-
-  @override
-  _DetailsPageState createState() => _DetailsPageState();
-}
-class _DetailsPageState extends State<DetailsPage> {
+  ExpandableContainer({
+    @required this.child,
+    this.collapsedHeight = 0.0,
+    this.expandedHeight = 918.0,
+    this.expanded = true,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(DateFormat('yMd').format(DateTime.parse(widget.absence.data['date'].toDate().toString()))),
-      ),
-      body: ListView(
-        children: <Widget> [
-          Card(
-            child: ListTile(
-              leading: Icon(widget.absence.data['justified'] ? Icons.sentiment_satisfied: Icons.sentiment_dissatisfied),
-              title: Text("Justificado:"),
-              subtitle: Text( (widget.absence.data['justified']) ? "Sim" : "Não" ),
-            ),
-          ),
-          Card(
-            child: ListTile(
-              leading: Icon(widget.absence.data['justified'] ? Icons.message: Icons.speaker_notes_off),
-              title: Text("Justificativa:"),
-              subtitle: Text(widget.absence.data['justification']),
-            ),
-          ),
-        ]
+    double screenWidth = MediaQuery.of(context).size.width;
+    return new AnimatedContainer(
+      duration: new Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+      width: screenWidth,
+      height: expanded ? expandedHeight : collapsedHeight,
+      child: new Container(
+        child: child,
+        decoration: new BoxDecoration(border: new Border.all(width: 1.0, color: Colors.blue)),
       ),
     );
   }

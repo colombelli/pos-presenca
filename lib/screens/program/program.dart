@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/screens/program/week_absences_review.dart';
@@ -33,7 +34,7 @@ class ProgramHome extends StatelessWidget {
           )
         ]
       ),
-      body: MenuList(userInfo: this.userInfo),
+      body: MenuList(userInfo: userInfo,),
     );
   }
 }
@@ -44,7 +45,6 @@ class ProgramHome extends StatelessWidget {
 //- view absences
 
 class MenuList extends StatefulWidget {
-
   final User userInfo;
   MenuList({ Key key, this.userInfo}): super(key: key);
 
@@ -55,7 +55,7 @@ class MenuList extends StatefulWidget {
 class _MenuListState extends State<MenuList> {
 
   navigateToPreviousAbsencesCalendar() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => History()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => History(userInfo: widget.userInfo,)));
   }
 
   navigateToPresenceRegistration() {
@@ -63,7 +63,7 @@ class _MenuListState extends State<MenuList> {
   }
   
   navigateToWeekAbsencesReview() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => WeekAbsencesReview()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => WeekAbsencesReview(userInfo: widget.userInfo,)));
   }
 
   @override
