@@ -6,6 +6,7 @@ import 'package:pg_check/models/user.dart';
 import 'package:pg_check/shared/loading.dart';
 import 'package:pg_check/screens/student/presence_reg.dart';
 import 'package:pg_check/screens/student/history.dart';
+import 'package:pg_check/screens/student/justification.dart';
 
 
 class StudentHome extends StatefulWidget {
@@ -103,7 +104,11 @@ class _StudentHomeState extends State<StudentHome> {
               _createDrawerItem(
                 icon: Icons.history,
                 text: 'History',
-                newBodyWidget: new History(userInfo: widget.userInfo,)),//new Text("history here")),
+                newBodyWidget: new History(userInfo: widget.userInfo,)),
+              _createDrawerItem(
+                icon: Icons.chat_bubble_outline,
+                text: 'Justification',
+                newBodyWidget: new StudentAbsencesJustification(userInfo: widget.userInfo,)),
                 Divider(),
               _createLogoutDrawerItem()
           ],
