@@ -158,7 +158,7 @@ class _MenuListState extends State<MenuList> {
                   //borderRadius: new BorderRadius.circular(0.0),
                   side: BorderSide(color: Colors.blue[400]),
                 ), 
-                onPressed: () => navigateToPreviousAbsencesCalendar(),
+                onPressed: null,//() => navigateToPreviousAbsencesCalendar(),
               ),
             ),
           ]    
