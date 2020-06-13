@@ -23,25 +23,24 @@ class History extends StatelessWidget {
   Widget build(BuildContext context) {
     final translation = (String s) => AppLocalizations.of(context).translate(s);
 
-    return Scaffold(
-      appBar: new AppBar(
-//        leading: Icon(Icons.school),
-        title: new Text("Suas faltas"),
-        backgroundColor: Colors.blue[400],
-        elevation: 0.0,
-        actions: <Widget>[
-          FlatButton.icon(
-            icon: Icon(Icons.person),
-            onPressed: () async {
-              await _auth.signOut();
-            },
-            label: Text(translation('logout_button')),
-          )
-        ]
-      ),
-
-      body: PreviousAbsences(userInfo: userInfo),
-    );
+    return PreviousAbsences(userInfo: userInfo);//Scaffold(
+//      appBar: new AppBar(
+//        title: new Text("Suas faltas"),
+//        backgroundColor: Colors.blue[400],
+//        elevation: 0.0,
+//        actions: <Widget>[
+//          FlatButton.icon(
+//            icon: Icon(Icons.person),
+//            onPressed: () async {
+//              await _auth.signOut();
+//            },
+//            label: Text(translation('logout_button')),
+//          )
+//        ]
+//      ),
+//
+//      body: PreviousAbsences(userInfo: userInfo),
+//    );
   }
 }
 class PreviousAbsences extends StatefulWidget {
@@ -67,22 +66,16 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
     var firestone = Firestore.instance;
     QuerySnapshot  qn;
 
-//    if (past == true) {
-//      abCollection = "absences";
-//    } else {
-//      abCollection = "pastAbsences";
-//    }
-
     await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (data) async {
       if (data.documents.length > 0){
-          await data.documents[0].reference.collection("students").where("name", isEqualTo: "cica").limit(1).getDocuments().then( (atad) async { // ! Mudar para pesquisar pelo nome do usuario
+          await data.documents[0].reference.collection("students").where("name", isEqualTo: widget.userInfo.name).limit(1).getDocuments().then( (atad) async { // ! Mudar para pesquisar pelo nome do usuario
             qn = await atad.documents[0].reference.collection(abCollection).orderBy('date').getDocuments();                                      // ! quando integrar com a página de usuário
           });
         }
       }
     );
 
-    return qn.documents;//.where((snapshot) => snapshot.data.containsValue("professor"));
+    return qn.documents;
   }
 
   static Widget _eventIcon = new Container(

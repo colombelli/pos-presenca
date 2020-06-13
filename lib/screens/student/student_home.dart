@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/services/auth.dart';
 import 'package:pg_check/models/user.dart';
 import 'package:pg_check/shared/loading.dart';
 import 'package:pg_check/screens/student/presence_reg.dart';
+import 'package:pg_check/screens/student/history.dart';
 
 
 class StudentHome extends StatefulWidget {
@@ -101,7 +103,7 @@ class _StudentHomeState extends State<StudentHome> {
               _createDrawerItem(
                 icon: Icons.history,
                 text: 'History',
-                newBodyWidget: new Text("history here")),
+                newBodyWidget: new History(userInfo: widget.userInfo,)),//new Text("history here")),
                 Divider(),
               _createLogoutDrawerItem()
           ],
