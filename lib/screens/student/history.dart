@@ -141,7 +141,7 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
             return Center(
               child: CircularProgressIndicator(), //Text("Loading..."),
             );
-          } else if (snapshot.data.isNotEmpty) {
+          } else{
               if (_isInitialized == false) {
                 createAbsenceEvents(snapshot);
                 _isInitialized = true;
@@ -185,9 +185,6 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
                   ]
                 )
               );
-          } else {
-              //return Center(child: Text("There are no registered absences for that student"),);
-              return Center(child: Text("Não existem faltas registradas no seu histórico."),);
           }
         }
       ),
