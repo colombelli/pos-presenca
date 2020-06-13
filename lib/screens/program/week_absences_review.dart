@@ -41,6 +41,7 @@ class WeekAbsencesReview extends StatelessWidget {
     );
   }
 }
+
 class WeekAbsencesList extends StatefulWidget {
   final User userInfo;
   WeekAbsencesList({ Key key, this.userInfo}): super(key: key);
@@ -52,17 +53,29 @@ class WeekAbsencesList extends StatefulWidget {
 class _WeekAbsencesListState extends State<WeekAbsencesList> {
   Future _data;
 
-  Future getStudents() async { // gets all students (yeah a lot more data than necssary sue me)
+  Future getStudents() async {
     var firestone = Firestore.instance;
     QuerySnapshot  qn;
 
-    await firestone.collection("programs").where("name", isEqualTo: "PPGC").limit(1).getDocuments().then( (data) async { //! Muda query de programa
-      if (data.documents.length > 0){
-          await data.documents[0].reference.collection("students").getDocuments();
-        }
-    });
+    List<DocumentSnapshot> dsl = <DocumentSnapshot>[];
 
-    return qn.documents;//.where((snapshot) => snapshot.data.containsValue("professor"));
+    await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (data) async {
+      if (data.documents.length > 0){
+          qn = await data.documents[0].reference.collection("students").getDocuments().then( (adat) async {
+            if (adat.documents.length > 0) {
+              for (var doc in adat.documents) {
+                final snap = await doc.reference.collection('weekAbsences').where('date', isLessThan: Timestamp.fromDate(DateTime.now())).getDocuments();
+                if ( snap.documents.length != 0) {
+                  dsl.add(doc);
+                }
+              }
+            }
+          });
+        }
+      }
+    );
+    //return qn.documents;
+    return dsl;
   }
 
   @override
@@ -85,11 +98,11 @@ class _WeekAbsencesListState extends State<WeekAbsencesList> {
             return ListView.builder(
               itemBuilder: (BuildContext context, int index) {
                 return new ExpandableListView(
-                  student: "Title $index",
-                  daysAbsent: snapshot.data['weekAbsences'],
+                  student: snapshot.data[index],
+                  userInfo: widget.userInfo,
                 );
               },
-              itemCount: 5,
+              itemCount: snapshot.data.length,
             );
           } else {
             return Center(child: Text("Não existem faltas registradas nesta semana."),);
@@ -101,10 +114,10 @@ class _WeekAbsencesListState extends State<WeekAbsencesList> {
 }
 
 class ExpandableListView extends StatefulWidget {
-  final String student;
-  final String daysAbsent;
+  final DocumentSnapshot student;
+  final User userInfo;
 
-  const ExpandableListView({Key key, this.student, this.daysAbsent}) : super(key: key);
+  const ExpandableListView({Key key, this.student, this.userInfo}) : super(key: key);
 
   @override
   _ExpandableListViewState createState() => new _ExpandableListViewState();
@@ -112,6 +125,27 @@ class ExpandableListView extends StatefulWidget {
 
 class _ExpandableListViewState extends State<ExpandableListView> {
   bool expandFlag = false;
+  Future _data;
+
+  Future getAbsences() async {
+    var firestone = Firestore.instance;
+    QuerySnapshot  qn;
+    await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (data) async {
+      if (data.documents.length > 0){
+          await data.documents[0].reference.collection("students").where("name", isEqualTo: widget.student.data['name']).limit(1).getDocuments().then( (atad) async {
+            qn = await atad.documents[0].reference.collection('weekAbsences').orderBy('date').getDocuments();
+          });
+        }
+      }
+    );
+    return qn.documents;//.where((snapshot) => snapshot.data.containsValue("professor"));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _data = getAbsences();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,8 +157,20 @@ class _ExpandableListViewState extends State<ExpandableListView> {
             color: Colors.blue[50],
             padding: new EdgeInsets.symmetric(horizontal: 5.0),
             child: new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+             mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
+                new Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                new Icon(
+                  Icons.person,
+                ),
+                new Text(
+                  "    ${widget.student.data['name']}",
+                  style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+                  ],
+                ),
                 new IconButton(
                     icon: new Container(
                       height: 50.0,
@@ -137,7 +183,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                         child: new Icon(
                           expandFlag ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                           color: Colors.blue[400],
-                          size: 30.0,
+                          size: 27.0,
                         ),
                       ),
                     ),
@@ -146,34 +192,54 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                         expandFlag = !expandFlag;
                       });
                     }),
-                new Text(
-                  widget.title,
-                  style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                )
               ],
             ),
           ),
-          new ExpandableContainer(
-              expanded: expandFlag,
-              child: new ListView.builder(
-                itemBuilder: (BuildContext context, int index) {
-                  return new Container(
-                    decoration:
-                        new BoxDecoration(border: new Border.all(width: 1.0, color: Colors.grey), color: Colors.black),
-                    child: new ListTile(
-                      title: new Text(
-                        "Cool $index",
-                        style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                      ),
-                      leading: new Icon(
-                        Icons.local_pizza,
-                        color: Colors.white,
-                      ),
+          new FutureBuilder(
+              future: _data,
+              builder: (_, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return ExpandableContainer(
+                    expanded: expandFlag,
+                    expandedHeight: 69,
+                    child: Center(
+                      child: CircularProgressIndicator(), 
                     ),
                   );
-                },
-                itemCount: 15,
-              ))
+                } else if (snapshot.data.isNotEmpty) {
+                    return ExpandableContainer(
+                      expanded: expandFlag,
+                      expandedHeight: snapshot.data.length*59.0,
+                      child: ListView.builder(
+                        itemCount: snapshot.data.length, 
+                        itemBuilder: (BuildContext context, int index) {
+                          return new Container(
+                            decoration:
+                                new BoxDecoration(border: new Border.all(width: 1.0, color: Colors.grey), color: Colors.blue[50]),
+                            child: new ListTile(
+                              title: new Text(
+                                //DateTime.parse(snapshot.data[index].data['date'].toDate().toString()).weekday.toString(),
+                                DateFormat('yMd').format(DateTime.parse(snapshot.data[index].data['date'].toDate().toString())),
+                                style: new TextStyle(color: Colors.black),
+                              ),
+                              leading: new Icon(
+                                Icons.date_range,
+                                color: Colors.grey[900],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                } else {
+                  return ExpandableContainer( 
+                    expanded: expandFlag,
+                    expandedHeight: 69.0,
+                    child :Center(child: Text("Não existem faltas registradas nesta semana."),),
+                  );
+                }
+              }
+            ),
         ],
       ),
     );
@@ -189,7 +255,7 @@ class ExpandableContainer extends StatelessWidget {
   ExpandableContainer({
     @required this.child,
     this.collapsedHeight = 0.0,
-    this.expandedHeight = 300.0,
+    this.expandedHeight = 918.0,
     this.expanded = true,
   });
 
