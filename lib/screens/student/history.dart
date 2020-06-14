@@ -96,7 +96,9 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
         DateTime.parse(snapshot.data[i].data['date'].toDate().toString()),
         new Event(
           date: DateTime.parse(snapshot.data[i].data['date'].toDate().toString()),
-          title: snapshot.data[i].data['justified'] ? 'Falta justificada' : "Falta não justificada",
+          title: snapshot.data[i].data['justified']
+            ? 'Falta justificada: ' +  snapshot.data[i].data['justification']
+            : "Falta não justificada",
           icon: _eventIcon,
         )
       );
