@@ -20,10 +20,10 @@ class _ProgramAbsencesAccreditState extends State<ProgramAbsencesAccredit> {
   Future getUncheckedStudents() async {
     var firestone = Firestore.instance;
     List<DocumentSnapshot> uncheckedStudents = new List();
-/* ta feio, mas o que isso faz é, pega todos os estudantes de um programa, 
+/* ta feio, mas o que isso faz é: pega todos os estudantes de um programa, 
 vê se cada um tem justificativas inseridas e vê o status
 delas, e se tiver unchecked, ele faz a volta e devolve o estudante, 
-e no fim tu tem uma lista de todos os que tem justificativa pendente */
+e no fim tu tem uma lista de todos os estudantes com justificativa pendente */
     await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (programCollections) async {
       if (programCollections.documents.length > 0){
         await programCollections.documents[0].reference.collection("students").getDocuments().then( (students) {
@@ -132,7 +132,7 @@ class _AbsencesPageState extends State<AbsencesPage> {
     return Scaffold(
       appBar: AppBar(
        // leading: Icon(Icons.person_outline),
-        title: Text("Faltas de ${widget.student.data['name']}"),
+        title: Text("Justificativas de ${widget.student.data['name']}"),
        ),
       body: Container(
         child: FutureBuilder(
@@ -157,7 +157,7 @@ class _AbsencesPageState extends State<AbsencesPage> {
                 });
           } else {
                 //return Center(child: Text("There are no registered absences for that student"),);
-                return Center(child: Text("Não existem faltas registradas para este aluno."),);
+                return Center(child: Text("Não existem justificativas pendentes registradas para este aluno."),);
           }
         }),
       ),
