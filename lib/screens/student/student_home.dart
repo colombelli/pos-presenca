@@ -94,17 +94,13 @@ class _StudentHomeState extends State<StudentHome> {
                     )
                  ),
               _createDrawerItem(
-                icon: Icons.home,
-                text: 'Home',
-                newBodyWidget: new Text("some home content here")),
+                icon: Icons.history,
+                text: 'History',
+                newBodyWidget: new History(userInfo: widget.userInfo,)),
                 _createDrawerItem(
                 icon: Icons.person_add,
                 text: 'Presence Registration',
                 newBodyWidget: StudentPresenceRegistration()),
-              _createDrawerItem(
-                icon: Icons.history,
-                text: 'History',
-                newBodyWidget: new History(userInfo: widget.userInfo,)),
               _createDrawerItem(
                 icon: Icons.chat_bubble_outline,
                 text: 'Justification',
