@@ -15,30 +15,33 @@ class ProgramAbsencesAccredit extends StatefulWidget {
 }
 
 class _ProgramAbsencesAccreditState extends State<ProgramAbsencesAccredit> {
-  Stream _data;
+  Future _data;
 
-  Stream getUncheckedStudents() async* {
+  Future getUncheckedStudents() async {
     var firestone = Firestore.instance;
-    QuerySnapshot qnWA;
     List<DocumentSnapshot> uncheckedStudents = new List();
-
+/* ta feio, mas o que isso faz é, pega todos os estudantes de um programa, 
+vê se cada um tem justificativas inseridas e vê o status
+delas, e se tiver unchecked, ele faz a volta e devolve o estudante, 
+e no fim tu tem uma lista de todos os que tem justificativa pendente */
     await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (programCollections) async {
       if (programCollections.documents.length > 0){
         await programCollections.documents[0].reference.collection("students").getDocuments().then( (students) {
           if(students.documents.length > 0) {
             students.documents.forEach((student) async {
-              qnWA = await student.reference.collection('absences').orderBy('date', descending: true).getDocuments();
-              List<DocumentSnapshot> studentHasUncheckedJustifications = 
-                qnWA.documents.where((element) => element.data["justified"] == true && element.data["status"] == 'unchecked').toList();
-              if (studentHasUncheckedJustifications.length > 0) {
-                uncheckedStudents.add(student);
-              }
+              await student.reference.collection('absences').orderBy('date', descending: true).getDocuments().then((qnWA) {
+                List<DocumentSnapshot> studentHasUncheckedJustifications = 
+                  qnWA.documents.where((element) => element.data["justified"] == true && element.data["status"] == 'unchecked').toList();
+                if (studentHasUncheckedJustifications.length > 0) {
+                  uncheckedStudents.add(student);
+                }
+              });
             });
           }
         });
       }
-    });
-    yield uncheckedStudents;
+    });    
+    return uncheckedStudents;
   }
 
   navigateToAbsences(DocumentSnapshot student) {
@@ -58,8 +61,8 @@ class _ProgramAbsencesAccreditState extends State<ProgramAbsencesAccredit> {
         title: Text("Justificativas"),
       ),
       body: Container(
-        child: StreamBuilder(
-          stream: _data,
+        child: FutureBuilder(
+          future: _data,
           builder: (_, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
