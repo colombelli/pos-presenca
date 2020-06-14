@@ -12,26 +12,24 @@ class StudentAbsencesJustification extends StatefulWidget {
 }
 
 class _StudentAbsencesJustificationState extends State<StudentAbsencesJustification> {
-  Future _data;
+  Stream _data;
 
-  Future getWeekAbsences() async {
+  Stream getAllAbsences() async* {
     var firestone = Firestore.instance;
-    QuerySnapshot qnA, qnWA;
+    QuerySnapshot qnWA;
     List totalAbsences;
 
     await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (studentList) async {
       if (studentList.documents.length > 0){
           await studentList.documents[0].reference.collection("students").where("name", isEqualTo: widget.userInfo.name).limit(1).getDocuments().then( (absencesList) async {
-            qnA = await absencesList.documents[0].reference.collection('absences').orderBy('date', descending: true).getDocuments();
-            qnWA = await absencesList.documents[0].reference.collection('weekAbsences').orderBy('date', descending: true).getDocuments();
+            qnWA = await absencesList.documents[0].reference.collection('weekAbsences').orderBy('date', descending: true).limit(5).getDocuments();
 
-            totalAbsences = qnWA.documents;
-            totalAbsences.addAll(qnA.documents);
+            totalAbsences = qnWA.documents.where((element) => element.data["justified"] == false).toList();
           });
         }
       }
     );
-    return totalAbsences;
+    yield totalAbsences;
   }
 
   navigateToDetails(DocumentSnapshot absence) {
@@ -41,7 +39,7 @@ class _StudentAbsencesJustificationState extends State<StudentAbsencesJustificat
   @override
   void initState() {
     super.initState();
-    _data = getWeekAbsences();
+    _data = getAllAbsences();
   }
 
   @override 
@@ -52,8 +50,8 @@ class _StudentAbsencesJustificationState extends State<StudentAbsencesJustificat
         title: Text("Faltas de ${widget.userInfo.name}"),
        ),
       body: Container(
-        child: FutureBuilder(
-          future: _data,
+        child: StreamBuilder(
+          stream: _data,
           builder: (_, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
@@ -68,7 +66,9 @@ class _StudentAbsencesJustificationState extends State<StudentAbsencesJustificat
                       child: ListTile(
                         leading: Icon(Icons.calendar_today),
                         title: Text(DateFormat('yMd').format(DateTime.parse(snapshot.data[index].data['date'].toDate().toString()))),
-                        onTap: () => navigateToDetails(snapshot.data[index]),
+                        onTap: () {
+                          navigateToDetails(snapshot.data[index]);
+                        },
                       ),
                     );
                 });
@@ -119,7 +119,7 @@ class _DetailsPageState extends State<DetailsPage> {
                 Navigator.push(
                   context, 
                   MaterialPageRoute(builder: (context) => 
-                    JustificationPage(absenceDate: widget.absence.data['date'], userInfo: widget.userInfo)));
+                    JustificationPage(absenceID: widget.absence.documentID, userInfo: widget.userInfo)));
               }
             ),
           ),
@@ -130,95 +130,100 @@ class _DetailsPageState extends State<DetailsPage> {
 }
 
 class JustificationPage extends StatefulWidget {
-  final Timestamp absenceDate;
+  final String absenceID;
   final User userInfo;
-  JustificationPage({ this.absenceDate, key, this.userInfo}): super(key: key);
+  JustificationPage({ this.absenceID, key, this.userInfo}): super(key: key);
 
   @override
   _JustificationPageState createState() => _JustificationPageState();
 }
 
 class _JustificationPageState extends State<JustificationPage> {
-
-  Future _data;
-
-  Future getJustification() async {
-    var firestone = Firestore.instance;
-    QuerySnapshot qn;
-
-    DocumentSnapshot absence;
-
-    await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (studentList) async {
-      if (studentList.documents.length > 0){
-          await studentList.documents[0].reference.collection("students").where("name", isEqualTo: widget.userInfo.name).limit(1).getDocuments().then( (absencesList) async {
-            qn = await absencesList.documents[0].reference.collection('absences').orderBy('date', descending: true).getDocuments();
-            qn.documents.forEach((abs) { 
-              if (abs['date'] == widget.absenceDate) {
-                absence = abs;
-              }
-            });
-            qn = await absencesList.documents[0].reference.collection('weekAbsences').orderBy('date', descending: true).getDocuments();
-            qn.documents.forEach((abs) { 
-              if (abs['date'] == widget.absenceDate) {
-                absence = abs;
-              }
-            });
-          });
-        }
-      }
-    );
-    return absence;
-  }
-
   @override
   void initState() {
     super.initState();
-    _data = getJustification();
   }
 
-  final _formKey = GlobalKey<FormState>();
-  String justification;
+  String justification='';
 
   @override 
   Widget build(BuildContext context) {
+
+    // ! investigar como voltar melhor tá díficil
+    Widget continueButton = FlatButton(
+        child: Text("Continue"),
+        onPressed:  () {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        },
+    );
+
+    // set up the AlertDialog
+    AlertDialog success = AlertDialog(
+      title: Text("Falta justificada com sucesso"),
+      content: Text("Mais informações estarão no seu histórico"),
+      actions: [
+        continueButton
+      ],
+    );
+
+    // set up the AlertDialog
+    AlertDialog emptyJustification = AlertDialog(
+      title: Text("Nenhuma justificativa inserida"),
+      actions: [
+        continueButton
+      ],
+    );
+
     return Scaffold(
       appBar: AppBar(
-       // leading: Icon(Icons.person_outline),
         title: Text("Faltas de ${widget.userInfo.name}"),
         actions: <Widget>[
           MaterialButton(
-            key: _formKey,
             child: Text("Enviar", style: TextStyle(color: Colors.white)),
-            onPressed: () {
-              print(justification);
-              _formKey.currentState.save();
+            onPressed: () async {
+              if(justification.isNotEmpty) {
+                await setJustification();
+                showDialog(
+                  context: context,
+                  builder: (context) => success
+                );
+              } else {
+                showDialog(
+                  context: context,
+                  builder: (context) => emptyJustification
+                );
+              }
             },
+            shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
           ),
         ],
        ),
       body: Container(
-        child: FutureBuilder(
-          future: _data,
-          builder: (_, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                
-                child: CircularProgressIndicator(), //Text("Loading..."),
-              );
-            } else if (snapshot.data != null) {
-              return TextFormField(
-                controller: TextEditingController(
-                  text: snapshot.data['justification']
-                  ),
-                onSaved: (String value) {
-                  justification = value;
-                },
-              );                
-          } else {
-                return Center(child: Text("Não existem faltas registradas para este aluno."),);
-          }
-        }),
+        child: TextFormField(
+          controller: TextEditingController(),
+          maxLength: 350,
+          onChanged: (String value) {
+            justification = value;
+          },
+        ),
       ),
+    );
+  }
+
+  Future setJustification() async {
+    var firestone = Firestore.instance;
+    await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (studentList) async {
+      if (studentList.documents.length > 0){
+          await studentList.documents[0].reference.collection("students")
+          .where("name", isEqualTo: widget.userInfo.name).limit(1).getDocuments()
+          .then( (absencesList) async {
+            await absencesList.documents[0].reference.collection("weekAbsences")
+            .document(widget.absenceID)
+            .updateData({'justification': justification,'justified': true});
+          });  
+        }
+      }
     );
   }
 }
