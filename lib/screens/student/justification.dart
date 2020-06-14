@@ -3,6 +3,9 @@ import 'package:pg_check/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
+/* pega faltas da coleção absences do aluno que não tenham justificativa, ele seleciona a que quiser e
+insere seru motivo */
+
 class StudentAbsencesJustification extends StatefulWidget {
   final User userInfo;
   StudentAbsencesJustification({key, this.userInfo}): super(key: key);
@@ -46,7 +49,6 @@ class _StudentAbsencesJustificationState extends State<StudentAbsencesJustificat
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-       // leading: Icon(Icons.person_outline),
         title: Text("Faltas de ${widget.userInfo.name}"),
        ),
       body: Container(
@@ -56,7 +58,7 @@ class _StudentAbsencesJustificationState extends State<StudentAbsencesJustificat
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
                 
-                child: CircularProgressIndicator(), //Text("Loading..."),
+                child: CircularProgressIndicator(),
               );
             } else if (snapshot.data.isNotEmpty) {
               return ListView.builder(
@@ -184,16 +186,15 @@ class _JustificationPageState extends State<JustificationPage> {
             onPressed: () async {
               if(justification.isNotEmpty) {
                 await setJustification();
-                showDialog(
+                return showDialog(
                   context: context,
                   builder: (context) => success
                 );
-              } else {
-                showDialog(
+              } 
+              return showDialog(
                   context: context,
                   builder: (context) => emptyJustification
                 );
-              }
             },
             shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
           ),
@@ -220,7 +221,12 @@ class _JustificationPageState extends State<JustificationPage> {
           .then( (absencesList) async {
             await absencesList.documents[0].reference.collection("absences")
             .document(widget.absenceID)
-            .updateData({'justification': justification,'justified': true});
+            .updateData(
+              {
+                'justification': justification,
+                'justified': true,
+                "status": "unchecked"
+              });
           });  
         }
       }
