@@ -95,15 +95,15 @@ class _StudentHomeState extends State<StudentHome> {
                  ),
               _createDrawerItem(
                 icon: Icons.history,
-                text: 'History',
+                text: 'Histórico de faltas',
                 newBodyWidget: new History(userInfo: widget.userInfo,)),
                 _createDrawerItem(
                 icon: Icons.person_add,
-                text: 'Presence Registration',
+                text: 'Registrar presença',
                 newBodyWidget: StudentPresenceRegistration()),
               _createDrawerItem(
                 icon: Icons.chat_bubble_outline,
-                text: 'Justification',
+                text: 'Justificativas pendentes',
                 newBodyWidget: new StudentAbsencesJustification(userInfo: widget.userInfo,)),
                 Divider(),
               _createLogoutDrawerItem()

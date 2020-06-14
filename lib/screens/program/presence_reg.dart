@@ -41,7 +41,6 @@ class _PresenceRegistrationState extends State<PresenceRegistration> {
 
   }
 
-
   @override
   void initState() {
     super.initState();
