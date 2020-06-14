@@ -22,7 +22,7 @@ class _StudentAbsencesJustificationState extends State<StudentAbsencesJustificat
     await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (studentList) async {
       if (studentList.documents.length > 0){
           await studentList.documents[0].reference.collection("students").where("name", isEqualTo: widget.userInfo.name).limit(1).getDocuments().then( (absencesList) async {
-            qnWA = await absencesList.documents[0].reference.collection('weekAbsences').orderBy('date', descending: true).limit(5).getDocuments();
+            qnWA = await absencesList.documents[0].reference.collection('absences').orderBy('date', descending: true).getDocuments();
 
             totalAbsences = qnWA.documents.where((element) => element.data["justified"] == false).toList();
           });

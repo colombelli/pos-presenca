@@ -127,6 +127,7 @@ class ExpandableListView extends StatefulWidget {
 class _ExpandableListViewState extends State<ExpandableListView> {
   bool expandFlag = false;
   Future _data;
+  List weekAbsencesIDS = new List();
 
   Future getAbsences() async {
     var firestone = Firestore.instance;
@@ -139,6 +140,9 @@ class _ExpandableListViewState extends State<ExpandableListView> {
         }
       }
     );
+    qn.documents.forEach((element) {
+      weekAbsencesIDS.add(element.documentID);
+    });
     return qn.documents;//.where((snapshot) => snapshot.data.containsValue("professor"));
   }
 
@@ -155,6 +159,30 @@ class _ExpandableListViewState extends State<ExpandableListView> {
         content: Text('Solicitação de justificativa enviada para ${widget.student.data['name']}'),
       ),
     );
+  }
+
+  Future transferAbsences() async {
+    var firestone = Firestore.instance;
+
+    await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (data) async {
+      if (data.documents.length > 0){
+          await data.documents[0].reference.collection("students").where("name", isEqualTo: widget.student.data['name']).limit(1).getDocuments().then( (atad) async {
+            weekAbsencesIDS.forEach((absID) {
+              atad.documents[0].reference.collection('weekAbsences').document(absID).get().then((dWA) async {
+                await atad.documents[0].reference.collection('absences')
+                  .add(
+                    {
+                      "date": dWA.data["date"],
+                      "justified": false,
+                      "justification": ''
+                    }
+                  ).then((updDoc) async => await atad.documents[0].reference.collection('weekAbsences').document(absID).delete());
+              });
+            }
+          );
+        });
+      }
+    });
   }
 
   @override
@@ -189,8 +217,8 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                       Text("Notificar")
                     ]
                   ),
-                  onPressed: () {
-                    // ! passar weekAbsences pra absences 
+                  onPressed: () async {
+                    await transferAbsences(); 
                     return _showToast(context);
                   },
                   shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
@@ -243,7 +271,6 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                 new BoxDecoration(border: new Border.all(width: 1.0, color: Colors.grey), color: Colors.blue[50]),
                             child: new ListTile(
                               title: new Text(
-                                //DateTime.parse(snapshot.data[index].data['date'].toDate().toString()).weekday.toString(),
                                 DateFormat('yMd').format(DateTime.parse(snapshot.data[index].data['date'].toDate().toString())),
                                 style: new TextStyle(color: Colors.black),
                               ),
