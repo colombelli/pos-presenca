@@ -65,7 +65,8 @@ class _WeekAbsencesListState extends State<WeekAbsencesList> {
             if (adat.documents.length > 0) {
               for (var doc in adat.documents) {
                 final snap = await doc.reference.collection('weekAbsences').where('date', isLessThan: Timestamp.fromDate(DateTime.now())).getDocuments();
-                if ( snap.documents.length != 0) {
+                // ! ja que eles podem ter uma falta, não deveria ser? if ( snap.documents.length != 0 && snap.documents.length > 1) { 
+                if ( snap.documents.length != 0 ) { 
                   dsl.add(doc);
                 }
               }
@@ -147,6 +148,15 @@ class _ExpandableListViewState extends State<ExpandableListView> {
     _data = getAbsences();
   }
 
+  void _showToast(BuildContext context) {
+    final scaffold = Scaffold.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: Text('Solicitação de justificativa enviada para ${widget.student.data['name']}'),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Container(
@@ -171,6 +181,20 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                 ),
                   ],
                 ),
+                new FlatButton(
+                  padding: EdgeInsets.all(10.0),
+                  child: Row(
+                    children: <Widget>[
+                      Icon(Icons.notification_important),
+                      Text("Notificar")
+                    ]
+                  ),
+                  onPressed: () {
+                    // ! passar weekAbsences pra absences 
+                    return _showToast(context);
+                  },
+                  shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
+                ),
                 new IconButton(
                     icon: new Container(
                       height: 50.0,
@@ -191,7 +215,8 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                       setState(() {
                         expandFlag = !expandFlag;
                       });
-                    }),
+                    }
+                  ),
               ],
             ),
           ),

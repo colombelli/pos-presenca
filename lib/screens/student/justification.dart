@@ -218,7 +218,7 @@ class _JustificationPageState extends State<JustificationPage> {
           await studentList.documents[0].reference.collection("students")
           .where("name", isEqualTo: widget.userInfo.name).limit(1).getDocuments()
           .then( (absencesList) async {
-            await absencesList.documents[0].reference.collection("weekAbsences")
+            await absencesList.documents[0].reference.collection("absences")
             .document(widget.absenceID)
             .updateData({'justification': justification,'justified': true});
           });  
