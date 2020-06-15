@@ -6,11 +6,38 @@ admin.initializeApp(functions.config().firebase)
 
 export const presenceRegistration = functions.https.onRequest((request, response) => {
   
-    //let regCode = request.query.regCode
+    let regCode = request.query.regCode
     let userID = request.query.userID
 
-    //let codeStr = String(regCode)
-    let userIDstr = String(userID)
+    var codeStr = String(regCode)
+    var userIDstr = String(userID)
+
+
+    function validateStudentPresence(progId: string){
+
+        admin.firestore().collection("programs").doc(progId).get()
+            .then(snapshot => {
+                const programInfo = snapshot.data()
+
+                if (programInfo){
+                    
+                    if (codeStr == programInfo.key){
+                        response.send(true)
+                    } else {
+                        response.send(false)
+                    }
+                }
+
+                else {
+                    throw new Error("Couldn't find student's prorgam");
+                }
+
+            })
+            .catch(e => {
+                throw new Error(e);
+            })
+    }
+
 
     admin.firestore().collection("users").doc(userIDstr).get()
         .then(snapshot => {  
@@ -25,14 +52,16 @@ export const presenceRegistration = functions.https.onRequest((request, response
                         
                         if (progsSnapshot.docs){
                             const programID = progsSnapshot.docs[0].id
-                            response.send(programID)
+                            validateStudentPresence(programID)   
+                        }
+                        else{
+                            throw new Error("Couldn't find student's prorgam");                            
                         }
 
                     })
                     .catch(err => {
                         response.send('Error:'+err)
                     })
-
 
             } else {
                 response.send("Error: couldn't find user")
