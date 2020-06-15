@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pg_check/models/user.dart';
 import 'package:pg_check/services/auth.dart';
 import 'package:pg_check/app_localizations.dart';
@@ -355,8 +356,9 @@ class _JustificationDetailsState extends State<JustificationDetails> {
               RaisedButton(
                 child: Text("Rejeitar"),
                 onPressed:  () {
-                  globalKey.currentState.showSnackBar(SnackBar(content: Text("text")));
                   changeJustificationStatus("rejected");
+                  Fluttertoast.showToast(msg: "Justificativa de ${widget.student.data['name']} foi rejeitada.");
+//                  globalKey.currentState.showSnackBar(SnackBar(content: Text("text")));
 //                  _showToast(context, false);
                   Navigator.pop(context);
                 },                
@@ -365,6 +367,7 @@ class _JustificationDetailsState extends State<JustificationDetails> {
                 child: Text("Aceitar"),
                 onPressed:  () {
                   changeJustificationStatus("accredited");
+                  Fluttertoast.showToast(msg: "Justificativa de ${widget.student.data['name']} foi aceita.");
 //                  _showToast(context, true);
                   Navigator.pop(context);
                 },                 

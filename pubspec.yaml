@@ -27,6 +27,7 @@ dependencies:
   intl: ^0.16.1
   flutter_calendar_carousel: ^1.4.12
   jiffy: ^3.0.1
+  fluttertoast: ^4.0.1
 
   flutter_localizations:
     sdk: flutter
