@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pg_check/models/user.dart';
 import 'package:pg_check/services/auth.dart';
 import 'package:pg_check/app_localizations.dart';
@@ -355,8 +356,17 @@ class _JustificationDetailsState extends State<JustificationDetails> {
               RaisedButton(
                 child: Text("Rejeitar"),
                 onPressed:  () {
-                  globalKey.currentState.showSnackBar(SnackBar(content: Text("text")));
                   changeJustificationStatus("rejected");
+                  Fluttertoast.showToast(
+                    msg: "Justificativa de ${widget.student.data['name']} foi rejeitada.",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 2,
+                    backgroundColor: Colors.orange[600],
+                    textColor: Colors.white,
+                    fontSize: 12.0
+                  );
+//                  globalKey.currentState.showSnackBar(SnackBar(content: Text("text")));
 //                  _showToast(context, false);
                   Navigator.pop(context);
                 },                
@@ -365,7 +375,15 @@ class _JustificationDetailsState extends State<JustificationDetails> {
                 child: Text("Aceitar"),
                 onPressed:  () {
                   changeJustificationStatus("accredited");
-//                  _showToast(context, true);
+                  Fluttertoast.showToast(msg: "Justificativa de ${widget.student.data['name']} foi aceita.",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 2,
+                    backgroundColor: Colors.orange[600],
+                    textColor: Colors.white,
+                    fontSize: 12.0,
+                  );
+                  //                  _showToast(context, true);
                   Navigator.pop(context);
                 },                 
               )
