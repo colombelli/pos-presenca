@@ -101,7 +101,7 @@ class _StudentHomeState extends State<StudentHome> {
                 _createDrawerItem(
                 icon: Icons.person_add,
                 text: 'Registrar presença',
-                newBodyWidget: StudentPresenceRegistration()),
+                newBodyWidget: StudentPresenceRegistration(userInfo: widget.userInfo,)),
               _createDrawerItem(
                 icon: Icons.chat_bubble_outline,
                 text: 'Justificativas pendentes',
