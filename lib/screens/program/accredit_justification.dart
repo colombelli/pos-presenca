@@ -154,14 +154,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
     _data = getAbsences();
   }
 
-  void _showToast(BuildContext context) {
-    final scaffold = Scaffold.of(context);
-    scaffold.showSnackBar(
-      SnackBar(
-        content: Text('Justificativa de ${widget.student.data['name']} foi respondida.'),
-      ),
-    );
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -328,9 +321,22 @@ class JustificationDetails extends StatefulWidget {
 }
 class _JustificationDetailsState extends State<JustificationDetails> {
 
+  void _showToast(BuildContext context, bool accepted) {
+    final scaffold = Scaffold.of(context);
+    final String action = accepted ? "aceita" : "rejeitada";
+    scaffold.showSnackBar(
+      SnackBar(
+        content: Text('Justificativa de ${widget.student.data['name']} foi $action.'),
+      ),
+    );
+  }
+
+  final globalKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: globalKey,
       appBar: AppBar(
         title: Text(DateFormat('yMd').format(DateTime.parse(widget.absence.data['date'].toDate().toString()))),
       ),
@@ -349,16 +355,17 @@ class _JustificationDetailsState extends State<JustificationDetails> {
               RaisedButton(
                 child: Text("Rejeitar"),
                 onPressed:  () {
+                  globalKey.currentState.showSnackBar(SnackBar(content: Text("text")));
                   changeJustificationStatus("rejected");
-                  Navigator.pop(context);
+//                  _showToast(context, false);
                   Navigator.pop(context);
                 },                
               ),
               RaisedButton(
-                child: Text("Abonar"),
+                child: Text("Aceitar"),
                 onPressed:  () {
                   changeJustificationStatus("accredited");
-                  Navigator.pop(context);
+//                  _showToast(context, true);
                   Navigator.pop(context);
                 },                 
               )
@@ -368,6 +375,8 @@ class _JustificationDetailsState extends State<JustificationDetails> {
       ),
     );
   }
+
+
 
     Future changeJustificationStatus( String newStatus ) async {
     var firestone = Firestore.instance;
