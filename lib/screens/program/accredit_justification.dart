@@ -417,19 +417,6 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                 ),
                 Row(
                   children: <Widget>[
-                    new FlatButton(
-                      padding: EdgeInsets.all(10.0),
-                      child: Row(
-                        children: <Widget>[
-                          Icon(Icons.notification_important),
-                          Text("Notificar")
-                        ]
-                      ),
-                      onPressed: () async {
-                        return _showToast(context);
-                      },
-                      shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
-                    ),  
                     new IconButton(
                       icon: new Container(
                         height: 50.0,
@@ -484,6 +471,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                 color: Colors.grey[900],
                               ),
                               title: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   new Text(
                                     DateFormat('yMd').format(DateTime.parse(snapshot.data[index].data['date'].toDate().toString())),
@@ -493,11 +481,15 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                   padding: EdgeInsets.all(10.0),
                                   child: Row(
                                     children: <Widget>[
-                                      Icon(Icons.notification_important),
-                                      Text("Visualizar")
+//                                      Icon(Icons.visibility), // ! Decidir com/sem icon
+                                      Text(
+                                        "  Visualizar",
+                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                      )
                                     ]
                                   ),
                                   onPressed: () async {
+
                                     return _showToast(context);
                                   },
                                   shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
