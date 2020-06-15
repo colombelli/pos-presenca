@@ -110,15 +110,13 @@ class _DetailsPageState extends State<DetailsPage> {
   @override
   Widget build(BuildContext context) {
 
-
     Widget continueButton = FlatButton(
         child: Text("Continuar"),
         onPressed:  () {
           Navigator.popAndPushNamed(context, '/');
         },
     );
-    
-  // set up the AlertDialog
+
     AlertDialog success = AlertDialog(
       title: Text("Enviado"),
       content: Text("A justificativa foi salva no seu histórico"),
@@ -126,8 +124,7 @@ class _DetailsPageState extends State<DetailsPage> {
         continueButton
       ],
     );
-
-    // set up the AlertDialog
+    
     AlertDialog emptyJustification = AlertDialog(
       title: Text("Nenhuma justificativa inserida"),
       actions: [
@@ -135,8 +132,43 @@ class _DetailsPageState extends State<DetailsPage> {
       ],
     );
 
+    Widget sendButton = FlatButton(
+        child: Text("Enviar"),
+        onPressed:  () async {
+              if(justification.isNotEmpty) {
+                await setJustification();
+                Navigator.pop(context);
+                return showDialog(
+                  context: context,
+                  builder: (context) => success
+                );
+              } 
+              return showDialog(
+                  context: context,
+                  builder: (context) => emptyJustification
+                );
+            
+        },
+    );
     
+    Widget cancelButton = FlatButton(
+        child: Text("Cancelar"),
+        onPressed:  () {Navigator.pop(context);},
+    );
 
+    // set up the AlertDialog
+    AlertDialog confirmDialog = AlertDialog(
+      title: Text("Confimação"),
+      content: Text("Tem certeza que deseja enviar esta justificativa?"),
+      actions: [
+        cancelButton,
+        sendButton
+      ],
+    );
+
+    // set up the AlertDialog
+    
+    
     return Scaffold(
       appBar: AppBar(
         title: Text(DateFormat('yMd').format(DateTime.parse(widget.absence.data['date'].toDate().toString()))),
@@ -183,18 +215,11 @@ class _DetailsPageState extends State<DetailsPage> {
                     color: Colors.blue,
                     textColor: Colors.white,
                     splashColor: Colors.blueGrey,
-                    onPressed: () async {
-                      if(justification.isNotEmpty) {
-                        await setJustification();
-                        return showDialog(
-                          context: context,
-                          builder: (context) => success
-                        );
-                      } 
-                      return showDialog(
-                          context: context,
-                          builder: (context) => emptyJustification
-                        );
+                    onPressed: () => {
+                      showDialog(
+                        context: context,
+                        builder: (context) => confirmDialog
+                      )
                     },
                     child: const Text('Enviar')
                 ),
