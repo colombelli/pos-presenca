@@ -346,7 +346,7 @@ class _JustificationDetailsState extends State<JustificationDetails> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              FlatButton(
+              RaisedButton(
                 child: Text("Rejeitar"),
                 onPressed:  () {
                   changeJustificationStatus("rejected");
@@ -354,7 +354,7 @@ class _JustificationDetailsState extends State<JustificationDetails> {
                   Navigator.pop(context);
                 },                
               ),
-              FlatButton(
+              RaisedButton(
                 child: Text("Abonar"),
                 onPressed:  () {
                   changeJustificationStatus("accredited");
