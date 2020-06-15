@@ -83,7 +83,7 @@ class _StudentHomeState extends State<StudentHome> {
 
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: Colors.blue[50],
+      backgroundColor: Colors.orange[700],
       endDrawer: Container(
       width: 230,
       child: new Drawer(
@@ -93,7 +93,7 @@ class _StudentHomeState extends State<StudentHome> {
               DrawerHeader(
                   child: Text(""),
                   decoration: BoxDecoration(
-                    color: Colors.blue[400]
+                    color: Colors.orange[500]
                     )
                  ),
               _createDrawerItem(
@@ -115,8 +115,10 @@ class _StudentHomeState extends State<StudentHome> {
       ),
       ),
       appBar: AppBar(
-        title: Text(translation('home_title')),
-        backgroundColor: Colors.blue[400],
+        leading:Icon(Icons.school),
+        title: 
+        Text('Pós-presença'),
+        backgroundColor: Colors.orange[700],
         elevation: 0.0,
 
         actions: <Widget>[

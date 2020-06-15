@@ -85,7 +85,7 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
         border: Border.all(color: Colors.blue, width: 2.0)),
     child: new Icon(
       Icons.person,
-      color: Colors.amber,
+      color: Colors.blue,
     ),
   );
 
@@ -135,7 +135,15 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
 
   @override 
   Widget build(BuildContext context) {
-    return Container(
+    return 
+    Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: 
+          Container(padding: EdgeInsets.only(top: 20),
+          child:
+          Card(
+            child:
+    Container(
       child: FutureBuilder(
         future: _data,
         builder: (_, snapshot) {
@@ -160,7 +168,7 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
                         showHeader: true,
                         daysHaveCircularBorder: true,
                         locale: 'pt',
-                        selectedDayButtonColor: Colors.blue[100], 
+                        selectedDayButtonColor: Colors.purple[700], 
                         selectedDayBorderColor: Colors.transparent,
                         todayBorderColor: Colors.transparent,
                         todayButtonColor: Colors.white,
@@ -189,7 +197,7 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
               );
           }
         }
-      ),
-    );
+      ),))
+    ));
   }
 }
