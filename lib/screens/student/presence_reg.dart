@@ -87,7 +87,7 @@ class _StudentPresenceRegistrationState extends State<StudentPresenceRegistratio
     if (jsonResponse){
       print('reg confirmed');
       setState(() {
-        this._barcodeString = codeReaded;
+        this._barcodeString = "Presença registrada com sucesso!";
       });
     } else {
       print('wrong code stop trying to hack our requests');

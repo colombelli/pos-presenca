@@ -83,36 +83,132 @@ class DetailsPage extends StatefulWidget {
 
 class _DetailsPageState extends State<DetailsPage> {
 
+
+  String justification = '';
+
+    
+  Future setJustification() async {
+    var firestone = Firestore.instance;
+    await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (studentList) async {
+      if (studentList.documents.length > 0){
+          await studentList.documents[0].reference.collection("students")
+          .where("name", isEqualTo: widget.userInfo.name).limit(1).getDocuments()
+          .then( (absencesList) async {
+            await absencesList.documents[0].reference.collection("absences")
+            .document(widget.absence.documentID)
+            .updateData(
+              {
+                'justification': justification,
+                'justified': true,
+                "status": "unchecked"
+              });
+          });  
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+
+
+    Widget continueButton = FlatButton(
+        child: Text("Continuar"),
+        onPressed:  () {
+          Navigator.popAndPushNamed(context, '/');
+        },
+    );
+    
+  // set up the AlertDialog
+    AlertDialog success = AlertDialog(
+      title: Text("Enviado"),
+      content: Text("A justificativa foi salva no seu histórico"),
+      actions: [
+        continueButton
+      ],
+    );
+
+    // set up the AlertDialog
+    AlertDialog emptyJustification = AlertDialog(
+      title: Text("Nenhuma justificativa inserida"),
+      actions: [
+        continueButton
+      ],
+    );
+
+    
+
     return Scaffold(
       appBar: AppBar(
         title: Text(DateFormat('yMd').format(DateTime.parse(widget.absence.data['date'].toDate().toString()))),
       ),
       body: ListView(
         children: <Widget> [
+          Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: 
           Card(
-            child: ListTile(
-              leading: Icon(widget.absence.data['justified'] ? Icons.sentiment_satisfied: Icons.sentiment_dissatisfied),
-              title: Text("Justificado:"),
-              subtitle: Text(
-                widget.absence.data['justified'] ? "Sim" : "Não",
-                style: TextStyle(color: widget.absence.data['justified'] ? Colors.green[400] : Colors.red[400])), 
-            ),
-          ),
-          Card(
-            child: ListTile(
-              leading: Icon(widget.absence.data['justified'] ? Icons.message: Icons.speaker_notes_off),
-              title: Text("Justificativa:"),
-              subtitle: Text(widget.absence.data['justification']),
-              onTap: () {
+            child: Column(
+              children: <Widget> [
+                ListTile(
+                  leading: Icon(Icons.message),
+                  title: Text("Justificativa:"),
+                  subtitle: Text(widget.absence.data['justification']),
+                ),
+              
+              Padding(
+              padding: const EdgeInsets.all(8.0),
+              child:
+
+              TextFormField(
+                keyboardType: TextInputType.multiline,
+                maxLines: 10,
+                controller: TextEditingController(),
+                onChanged: (String value) {
+                  justification = value;
+                },
+                decoration: InputDecoration(
+                  labelText: "Digite a justificativa",
+                  hintText: " ",
+                  alignLabelWithHint: true,
+                  fillColor: Colors.white,
+                  border: new OutlineInputBorder(
+                    borderSide: new BorderSide(),
+                  )
+                ),
+              ),
+              ),
+              SizedBox(height: 10),
+
+              RaisedButton(
+                    color: Colors.blue,
+                    textColor: Colors.white,
+                    splashColor: Colors.blueGrey,
+                    onPressed: () async {
+                      if(justification.isNotEmpty) {
+                        await setJustification();
+                        return showDialog(
+                          context: context,
+                          builder: (context) => success
+                        );
+                      } 
+                      return showDialog(
+                          context: context,
+                          builder: (context) => emptyJustification
+                        );
+                    },
+                    child: const Text('Enviar')
+                ),
+
+
+              /*onTap: () {
                 Navigator.push(
                   context, 
                   MaterialPageRoute(builder: (context) => 
                     JustificationPage(absenceID: widget.absence.documentID, userInfo: widget.userInfo)));
-              }
-            ),
+              }*/
+              ]),
           ),
+          )
         ]
       ),
     );
@@ -188,7 +284,11 @@ class _JustificationPageState extends State<JustificationPage> {
         ],
        ),
       body: Container(
+        width: 100,
         child: TextFormField(
+          style: TextStyle(
+            height: 100
+          ),
           controller: TextEditingController(),
           maxLength: 350,
           onChanged: (String value) {
