@@ -29,9 +29,9 @@ e no fim tu tem uma lista de todos os estudantes com justificativa pendente */
         await programCollections.documents[0].reference.collection("students").getDocuments().then( (students) {
           if(students.documents.length > 0) {
             students.documents.forEach((student) async {
-              await student.reference.collection('absences').orderBy('date', descending: true).getDocuments().then((qnWA) {
-                List<DocumentSnapshot> studentHasUncheckedJustifications = 
-                  qnWA.documents.where((element) => element.data["justified"] == true && element.data["status"] == 'unchecked').toList();
+              await student.reference.collection('absences').orderBy('date', descending: true).getDocuments().then((qnA) {
+                List<DocumentSnapshot> studentHasUncheckedJustifications =
+                  qnA.documents.where((element) => element.data["justified"] == true && element.data["status"] == 'unchecked').toList();
                 if (studentHasUncheckedJustifications.length > 0) {
                   uncheckedStudents.add(student);
                 }
@@ -40,7 +40,8 @@ e no fim tu tem uma lista de todos os estudantes com justificativa pendente */
           }
         });
       }
-    });    
+    });
+    print(uncheckedStudents.length); 
     return uncheckedStudents;
   }
 
@@ -68,7 +69,7 @@ e no fim tu tem uma lista de todos os estudantes com justificativa pendente */
               return Center(
                 child: CircularProgressIndicator(), //Text("Loading..."),
               );
-            } else {
+            } else if(snapshot.data.length > 0){
               return ListView.builder(
                 itemCount: snapshot.data.length,
                 itemBuilder: (_, index){
@@ -81,8 +82,13 @@ e no fim tu tem uma lista de todos os estudantes com justificativa pendente */
                     ),
                   );
               });
-          }
-        }),
+            } else {
+              //return Center(child: Text("There are no registered absences for that student"),);
+              return Center(child: Text("Não existem justificativas pendentes registradas."),);
+
+            }
+          } 
+        ),
       )
     );
   }
@@ -99,7 +105,6 @@ class AbsencesPage extends StatefulWidget {
 }
 
 class _AbsencesPageState extends State<AbsencesPage> {
-  Future _data;
 
   Future getAbsences() async {
     var firestone = Firestore.instance;
@@ -121,12 +126,6 @@ class _AbsencesPageState extends State<AbsencesPage> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => DetailsPage(absence: absence, student: student, userInfo: widget.userInfo)));
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _data = getAbsences();
-  }
-
   @override 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -136,7 +135,7 @@ class _AbsencesPageState extends State<AbsencesPage> {
        ),
       body: Container(
         child: FutureBuilder(
-          future: _data,
+          future: getAbsences(),
           builder: (_, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
@@ -192,6 +191,7 @@ class _DetailsPageState extends State<DetailsPage> {
             ),
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               FlatButton(
                 child: Text("Rejeitar"),
@@ -207,7 +207,7 @@ class _DetailsPageState extends State<DetailsPage> {
                   changeJustificationStatus("accredited");
                   Navigator.pop(context);
                   Navigator.pop(context);
-                },                
+                },                 
               )
             ],
           )
@@ -232,6 +232,6 @@ class _DetailsPageState extends State<DetailsPage> {
           });  
         }
       }
-    );
+    ); 
   }
 }

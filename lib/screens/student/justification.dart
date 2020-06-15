@@ -15,7 +15,6 @@ class StudentAbsencesJustification extends StatefulWidget {
 }
 
 class _StudentAbsencesJustificationState extends State<StudentAbsencesJustification> {
-  Stream _data;
 
   Stream getAllAbsences() async* {
     var firestone = Firestore.instance;
@@ -39,12 +38,6 @@ class _StudentAbsencesJustificationState extends State<StudentAbsencesJustificat
     Navigator.push(context, MaterialPageRoute(builder: (context) => DetailsPage(absence: absence, userInfo: widget.userInfo)));
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _data = getAllAbsences();
-  }
-
   @override 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +46,7 @@ class _StudentAbsencesJustificationState extends State<StudentAbsencesJustificat
        ),
       body: Container(
         child: StreamBuilder(
-          stream: _data,
+          stream: getAllAbsences(),
           builder: (_, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
@@ -91,7 +84,7 @@ class DetailsPage extends StatefulWidget {
 
   @override
   _DetailsPageState createState() => _DetailsPageState();
-}
+} 
 
 class _DetailsPageState extends State<DetailsPage> {
 
@@ -155,7 +148,6 @@ class _JustificationPageState extends State<JustificationPage> {
     Widget continueButton = FlatButton(
         child: Text("Continue"),
         onPressed:  () {
-          Navigator.pop(context);
           Navigator.pop(context);
         },
     );
