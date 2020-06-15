@@ -55,7 +55,8 @@ class MenuList extends StatefulWidget {
 class _MenuListState extends State<MenuList> {
 
   navigateToUncheckedJustifications() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => ProgramAbsencesAccredit(userInfo: widget.userInfo,)));
+    //Navigator.push(context, MaterialPageRoute(builder: (context) => ProgramAbsencesAccredit(userInfo: widget.userInfo,)));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => JustificationsReview(userInfo: widget.userInfo,)));
   }
 
   navigateToPresenceRegistration() {

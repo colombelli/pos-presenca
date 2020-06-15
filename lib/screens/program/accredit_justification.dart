@@ -238,6 +238,7 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 }
 
+// ! NOVO
 
 class JustificationsReview extends StatelessWidget {
   final AuthService _auth = AuthService();
@@ -256,7 +257,7 @@ class JustificationsReview extends StatelessWidget {
         elevation: 0.0,
         actions: <Widget>[
           FlatButton.icon(
-//            icon: Icon(Icons.person),
+            icon: Icon(Icons.person),
             onPressed: () async {
               await _auth.signOut();
             },
@@ -335,7 +336,7 @@ class _JustificationsListState extends State<JustificationsList> {
               itemCount: snapshot.data.length,
             );
           } else {
-            return Center(child: Text("Não existem faltas não notificadas desta semana."),);
+            return Center(child: Text("Não existem novas justificativas."),);
           }
         }
       ),
@@ -361,19 +362,19 @@ class _ExpandableListViewState extends State<ExpandableListView> {
   Future getAbsences() async {
     var firestone = Firestore.instance;
     QuerySnapshot  qn;
+
     await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (data) async {
       if (data.documents.length > 0){
           await data.documents[0].reference.collection("students").where("name", isEqualTo: widget.student.data['name']).limit(1).getDocuments().then( (atad) async {
-            qn = await atad.documents[0].reference.collection('weekAbsences').orderBy('date').getDocuments();
+            qn = await atad.documents[0].reference.collection('absences').orderBy('date').getDocuments();
           });
         }
       }
     );
-    qn.documents.forEach((element) {
-      weekAbsencesIDS.add(element.documentID);
-    });
-    return qn.documents;//.where((snapshot) => snapshot.data.containsValue("professor"));
+
+    return qn.documents.where((absence) => absence.data['status'] == 'unchecked').toList();
   }
+
 
   @override
   void initState() {
@@ -385,33 +386,9 @@ class _ExpandableListViewState extends State<ExpandableListView> {
     final scaffold = Scaffold.of(context);
     scaffold.showSnackBar(
       SnackBar(
-        content: Text('Solicitação de justificativa enviada para ${widget.student.data['name']}'),
+        content: Text('Justificativa de ${widget.student.data['name']} foi respondida.'),
       ),
     );
-  }
-
-  Future transferAbsences() async {
-    var firestone = Firestore.instance;
-
-    await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (data) async {
-      if (data.documents.length > 0){
-          await data.documents[0].reference.collection("students").where("name", isEqualTo: widget.student.data['name']).limit(1).getDocuments().then( (atad) async {
-            weekAbsencesIDS.forEach((absID) {
-              atad.documents[0].reference.collection('weekAbsences').document(absID).get().then((dWA) async {
-                await atad.documents[0].reference.collection('absences')
-                  .add(
-                    {
-                      "date": dWA.data["date"],
-                      "justified": false,
-                      "justification": ''
-                    }
-                  ).then((updDoc) async => await atad.documents[0].reference.collection('weekAbsences').document(absID).delete());
-              });
-            }
-          );
-        });
-      }
-    });
   }
 
   @override
@@ -449,7 +426,6 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                         ]
                       ),
                       onPressed: () async {
-                        await transferAbsences(); 
                         return _showToast(context);
                       },
                       shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
@@ -503,13 +479,30 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                             decoration:
                                 new BoxDecoration(border: new Border.all(width: 1.0, color: Colors.grey), color: Colors.blue[50]),
                             child: new ListTile(
-                              title: new Text(
-                                DateFormat('yMd').format(DateTime.parse(snapshot.data[index].data['date'].toDate().toString())),
-                                style: new TextStyle(color: Colors.black),
-                              ),
                               leading: new Icon(
                                 Icons.date_range,
                                 color: Colors.grey[900],
+                              ),
+                              title: Row(
+                                children: <Widget>[
+                                  new Text(
+                                    DateFormat('yMd').format(DateTime.parse(snapshot.data[index].data['date'].toDate().toString())),
+                                    style: new TextStyle(color: Colors.black),
+                                  ),
+                                new FlatButton(
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Icon(Icons.notification_important),
+                                      Text("Visualizar")
+                                    ]
+                                  ),
+                                  onPressed: () async {
+                                    return _showToast(context);
+                                  },
+                                  shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
+                                ),  
+                                ],
                               ),
                             ),
                           );
