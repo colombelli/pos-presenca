@@ -26,6 +26,94 @@ class _StudentPresenceRegistrationState extends State<StudentPresenceRegistratio
   @override
   Widget build(BuildContext context) {
     
+    Widget continueButton = FlatButton(
+        child: Text("Continuar"),
+        onPressed:  () {
+          Navigator.popAndPushNamed(context, '/');
+        },
+        );
+
+        AlertDialog success = AlertDialog(
+          title: Text("Registrado"),
+          content: Text("Presença registrada com sucesso."),
+          actions: [
+            continueButton
+          ],
+        );     
+
+        Widget cancelButton = FlatButton(
+        child: Text("Cancelar"),
+        onPressed:  () {
+          Navigator.popAndPushNamed(context, '/');
+        },
+        );
+
+        Widget againButton = FlatButton(
+        child: Text("Tentar Novamente"),
+        onPressed:  () {
+          Navigator.pop(context);
+        },
+        );
+
+        AlertDialog errorReg = AlertDialog(
+          title: Text("Erro"),
+          content: Text("Não foi possível registrar a presença. Por favor, tente novamente."),
+          actions: [
+            cancelButton,
+            againButton
+          ],
+        );  
+  
+    void validateReg(String codeReaded, String userId) async {
+      
+      var baseUrl = 'https://us-central1-pg-check-68d1b.cloudfunctions.net/presenceRegistration';
+      var reqUrl = baseUrl + "?regCode=" + codeReaded + "&userID=" + userId; 
+
+      var response = await http.get(reqUrl);
+      if (response.statusCode == 200) {
+        var jsonResponse = convert.jsonDecode(response.body);
+
+        if (jsonResponse){
+          print('reg confirmed');
+          return showDialog(
+                  context: context,
+                  builder: (context) => success
+                );
+        } else {
+          print('wrong code stop trying to hack our requests');
+          return showDialog(
+                  context: context,
+                  builder: (context) => errorReg
+                );
+        }
+
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    }
+
+    Future scan() async {
+      try {
+        var barcode = await BarcodeScanner.scan();
+        var codeStr = barcode.rawContent;
+        validateReg(codeStr, widget.userInfo.uid);
+
+        //setState(() => this._barcodeString = barcode.rawContent);
+      } on PlatformException catch (e) {
+        if (e.code == BarcodeScanner.cameraAccessDenied) {
+          setState(() {
+            this._barcodeString = 'The user did not grant the camera permission!';
+          });
+        } else {
+          setState(() => this._barcodeString = 'Error: $e');
+        }
+      } on FormatException{
+        setState(() => this._barcodeString = 'null (User returned using the "back"-button before scanning anything. Result)');
+      } catch (e) {
+        setState(() => this._barcodeString = 'Error: $e');
+      }
+    }
+
     return new Center(
           child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -49,58 +137,8 @@ class _StudentPresenceRegistrationState extends State<StudentPresenceRegistratio
               ,
             ],
           )
-        );      
+        );   
   }
-
-
-  Future scan() async {
-    try {
-      var barcode = await BarcodeScanner.scan();
-      var codeStr = barcode.rawContent;
-      validateReg(codeStr, widget.userInfo.uid);
-
-      //setState(() => this._barcodeString = barcode.rawContent);
-    } on PlatformException catch (e) {
-      if (e.code == BarcodeScanner.cameraAccessDenied) {
-        setState(() {
-          this._barcodeString = 'The user did not grant the camera permission!';
-        });
-      } else {
-        setState(() => this._barcodeString = 'Error: $e');
-      }
-    } on FormatException{
-      setState(() => this._barcodeString = 'null (User returned using the "back"-button before scanning anything. Result)');
-    } catch (e) {
-      setState(() => this._barcodeString = 'Error: $e');
-    }
-  }
-
-  void validateReg(String codeReaded, String userId) async {
-  
-  var baseUrl = 'https://us-central1-pg-check-68d1b.cloudfunctions.net/presenceRegistration';
-  var reqUrl = baseUrl + "?regCode=" + codeReaded + "&userID=" + userId; 
-
-  var response = await http.get(reqUrl);
-  if (response.statusCode == 200) {
-    var jsonResponse = convert.jsonDecode(response.body);
-
-    if (jsonResponse){
-      print('reg confirmed');
-      setState(() {
-        this._barcodeString = "Presença registrada com sucesso!";
-      });
-    } else {
-      print('wrong code stop trying to hack our requests');
-      setState(() {
-        this._barcodeString = "Erro ao registrar presença. Tente novamente.";
-      });
-    }
-
-  } else {
-    print('Request failed with status: ${response.statusCode}.');
-  }
-}
-
 }
 
 
