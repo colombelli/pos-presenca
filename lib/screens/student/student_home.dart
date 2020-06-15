@@ -84,7 +84,9 @@ class _StudentHomeState extends State<StudentHome> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.blue[50],
-      endDrawer: new Drawer(
+      endDrawer: Container(
+      width: 230,
+      child: new Drawer(
         child: ListView(
         padding: EdgeInsets.zero,
         children: [
@@ -110,6 +112,7 @@ class _StudentHomeState extends State<StudentHome> {
               _createLogoutDrawerItem()
           ],
         ),
+      ),
       ),
       appBar: AppBar(
         title: Text(translation('home_title')),
