@@ -209,42 +209,46 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                 ),
                   ],
                 ),
-                new FlatButton(
-                  padding: EdgeInsets.all(10.0),
-                  child: Row(
-                    children: <Widget>[
-                      Icon(Icons.notification_important),
-                      Text("Notificar")
-                    ]
-                  ),
-                  onPressed: () async {
-                    await transferAbsences(); 
-                    return _showToast(context);
-                  },
-                  shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
-                ),
-                new IconButton(
-                    icon: new Container(
-                      height: 50.0,
-                      width: 50.0,
-                      decoration: new BoxDecoration(
-                        color: Colors.blue[250],
-                        shape: BoxShape.circle,
+                Row(
+                  children: <Widget>[
+                    new FlatButton(
+                      padding: EdgeInsets.all(10.0),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.notification_important),
+                          Text("Notificar")
+                        ]
                       ),
-                      child: new Center(
-                        child: new Icon(
-                          expandFlag ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                          color: Colors.blue[400],
-                          size: 27.0,
+                      onPressed: () async {
+                        await transferAbsences(); 
+                        return _showToast(context);
+                      },
+                      shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
+                    ),  
+                    new IconButton(
+                      icon: new Container(
+                        height: 50.0,
+                        width: 50.0,
+                        decoration: new BoxDecoration(
+                          color: Colors.blue[250],
+                          shape: BoxShape.circle,
+                        ),
+                        child: new Center(
+                          child: new Icon(
+                            expandFlag ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                            color: Colors.blue[400],
+                            size: 27.0,
+                          ),
                         ),
                       ),
+                      onPressed: () {
+                        setState(() {
+                          expandFlag = !expandFlag;
+                        });
+                      }
                     ),
-                    onPressed: () {
-                      setState(() {
-                        expandFlag = !expandFlag;
-                      });
-                    }
-                  ),
+                  ],
+                ),
               ],
             ),
           ),

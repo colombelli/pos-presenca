@@ -28,7 +28,7 @@ class _StudentHomeState extends State<StudentHome> {
   @override
     void initState() { 
       super.initState();
-      bodyWidget = Text("some home content here");
+      bodyWidget =  History(userInfo: widget.userInfo,); // Text("some home content here");
     }
 
   @override
