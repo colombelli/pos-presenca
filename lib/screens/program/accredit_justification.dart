@@ -74,7 +74,7 @@ e no fim tu tem uma lista de todos os estudantes com justificativa pendente */
                 itemBuilder: (_, index){
 
                   return Card(
-                    child: ListTile(
+                    child: ListTile( 
                       leading: Icon(Icons.person_outline),
                       title: Text(snapshot.data[index].data['name']),
                       onTap: () => navigateToAbsences(snapshot.data[index]),

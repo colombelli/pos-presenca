@@ -47,11 +47,7 @@ class _StudentAbsencesJustificationState extends State<StudentAbsencesJustificat
 
   @override 
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Faltas de ${widget.userInfo.name}"),
-       ),
-      body: Container(
+    return Container(
         child: StreamBuilder(
           stream: _data,
           builder: (_, snapshot) {

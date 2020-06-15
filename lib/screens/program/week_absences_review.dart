@@ -106,7 +106,7 @@ class _WeekAbsencesListState extends State<WeekAbsencesList> {
               itemCount: snapshot.data.length,
             );
           } else {
-            return Center(child: Text("Não existem faltas registradas nesta semana."),);
+            return Center(child: Text("Não existem faltas não notificadas desta semana."),);
           }
         }
       ),
@@ -287,11 +287,11 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                         },
                       ),
                     );
-                } else {
+                } else { 
                   return ExpandableContainer( 
                     expanded: expandFlag,
                     expandedHeight: 69.0,
-                    child :Center(child: Text("Não existem faltas registradas nesta semana."),),
+                    child :Center(child: Text("Não existem novas justificativas."),),
                   );
                 }
               }
