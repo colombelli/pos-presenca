@@ -6,7 +6,7 @@ admin.initializeApp(functions.config().firebase)
 
 export const presenceRegistration = functions.https.onRequest((request, response) => {
   
-    let regCode = request.query.redCode
+    let regCode = request.query.regCode
     let userID = request.query.userID
 
     let codeStr = String(regCode)
@@ -16,17 +16,19 @@ export const presenceRegistration = functions.https.onRequest((request, response
         .then(snapshot => {  
             
             let userData = snapshot.data()
-            response.send(userData)
-            response.send("AND"+codeStr)
+            
+            if (userData){
+                response.send(userData)
+            } else {
+                response.send("Error: couldn't find user")
+            }
+            console.log(codeStr)
+            console.log(userData)
+
             
 
         })
         .catch(err => {
             response.send('Error:'+err)
         }) 
-
-
-
-  
-    response.send("");
 });
