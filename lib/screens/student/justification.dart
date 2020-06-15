@@ -68,8 +68,7 @@ class _StudentAbsencesJustificationState extends State<StudentAbsencesJustificat
                 return Center(child: Text("Não existem faltas registradas para este aluno."),);
           }
         }),
-      ),
-    );
+      );
   }
 }
 
@@ -142,16 +141,16 @@ class _JustificationPageState extends State<JustificationPage> {
 
     // ! investigar como voltar melhor tá díficil
     Widget continueButton = FlatButton(
-        child: Text("Continue"),
+        child: Text("Continuar"),
         onPressed:  () {
-          Navigator.pop(context);
+          Navigator.popAndPushNamed(context, '/');
         },
     );
 
     // set up the AlertDialog
     AlertDialog success = AlertDialog(
-      title: Text("Falta justificada com sucesso"),
-      content: Text("Mais informações estarão no seu histórico"),
+      title: Text("Enviado"),
+      content: Text("A justificativa foi salva no seu histórico"),
       actions: [
         continueButton
       ],

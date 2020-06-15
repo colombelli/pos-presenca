@@ -53,6 +53,7 @@ class _StudentHomeState extends State<StudentHome> {
         onTap: () => {
           setState(() {
             bodyWidget = newBodyWidget;
+            Navigator.pop(context);
           })
         },
       );
