@@ -51,7 +51,6 @@ class _StudentPresenceRegistrationState extends State<StudentPresenceRegistratio
     try {
       var barcode = await BarcodeScanner.scan();
       setState(() => this._barcodeString = barcode.rawContent);
-      print(barcode.rawContent);
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.cameraAccessDenied) {
         setState(() {
