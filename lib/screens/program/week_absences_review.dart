@@ -158,7 +158,8 @@ class _ExpandableListViewState extends State<ExpandableListView> {
     final scaffold = Scaffold.of(context);
     scaffold.showSnackBar(
       SnackBar(
-        content: Text('Solicitação de justificativa enviada para ${widget.student.data['name']}'),
+        backgroundColor: Colors.grey[100],
+        content: Text('Solicitação de justificativa enviada para ${widget.student.data['name']}', style: TextStyle(color: Colors.orange[700]),),
       ),
     );
   }
@@ -208,7 +209,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                 ),
                 new Text(
                   "    ${widget.student.data['name']}",
-                  style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.orange[700]),
+                  style: new TextStyle(fontSize: 17, color: Colors.orange[700]),
                 ),
                   ],
                 ),
@@ -263,7 +264,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                     expanded: expandFlag,
                     expandedHeight: 69,
                     child: Center(
-                      child: CircularProgressIndicator(), 
+                      child: Loading(), 
                     ),
                   );
                 } else if (snapshot.data.isNotEmpty) {
@@ -275,15 +276,15 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                         itemBuilder: (BuildContext context, int index) {
                           return new Container(
                             decoration:
-                                new BoxDecoration(border: new Border.all(width: 1.0, color: Colors.grey), color: Colors.blue[50]),
+                                new BoxDecoration(border: new Border.all(width: 1.0, color: Colors.deepOrange), color: Colors.orange[100]),
                             child: new ListTile(
                               title: new Text(
                                 DateFormat('yMd').format(DateTime.parse(snapshot.data[index].data['date'].toDate().toString())),
-                                style: new TextStyle(color: Colors.black),
+                                style: new TextStyle(color: Colors.orange[700]),
                               ),
                               leading: new Icon(
                                 Icons.date_range,
-                                color: Colors.grey[900],
+                                color: Colors.orange[700],
                               ),
                             ),
                           );
@@ -294,7 +295,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                   return ExpandableContainer( 
                     expanded: expandFlag,
                     expandedHeight: 69.0,
-                    child :Center(child: Text("Não existem novas justificativas."),),
+                    child :Center(child: Text("Não existem novas justificativas.", style: TextStyle(color: Colors.orange[700]),),),
                   );
                 }
               }
@@ -328,7 +329,7 @@ class ExpandableContainer extends StatelessWidget {
       height: expanded ? expandedHeight : collapsedHeight,
       child: new Container(
         child: child,
-        decoration: new BoxDecoration(border: new Border.all(width: 1.0, color: Colors.blue)),
+        decoration: new BoxDecoration(border: new Border.all(width: 1.0, color: Colors.deepOrange)),
       ),
     );
   }
