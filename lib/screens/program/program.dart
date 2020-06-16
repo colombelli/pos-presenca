@@ -22,7 +22,7 @@ class ProgramHome extends StatelessWidget {
       appBar: new AppBar(
         leading: Icon(Icons.account_balance),
         title: new Text("Menu PPGC"),
-        backgroundColor: Colors.blue[400],
+        backgroundColor: Colors.orange[700],
         elevation: 0.0,
         actions: <Widget>[
           FlatButton.icon(
@@ -70,6 +70,7 @@ class _MenuListState extends State<MenuList> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      backgroundColor: Colors.orange[700],
       body: Center(
         child: new Column(
           mainAxisSize: MainAxisSize.min,
@@ -81,9 +82,9 @@ class _MenuListState extends State<MenuList> {
               child: new RaisedButton(
                 child: new Text("Registar presenças"),
                 color: Colors.white,
-                textColor: Colors.blue[500],
+                textColor: Colors.orange[700],
                 disabledColor: Colors.white,
-                disabledTextColor: Colors.blue[400],
+                disabledTextColor: Colors.orange[700],
                 padding: EdgeInsets.all(35.0),
                 elevation: 2.0,
                 disabledElevation: 2.0,
@@ -91,7 +92,7 @@ class _MenuListState extends State<MenuList> {
                 shape: RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(18.0),
                   //borderRadius: new BorderRadius.circular(0.0),
-                  side: BorderSide(color: Colors.blue[400]),
+                  side: BorderSide(color: Colors.deepOrange),
                 ),
                 onPressed: () => navigateToPresenceRegistration(),
               ),
@@ -104,16 +105,16 @@ class _MenuListState extends State<MenuList> {
               child: new RaisedButton(
                 child: new Text("Justificativas Pendentes"),
                 color: Colors.white,
-                textColor: Colors.blue[500],
+                textColor: Colors.orange[700],
                 disabledColor: Colors.white,
-                disabledTextColor: Colors.blue[400],
+                disabledTextColor: Colors.orange[700],
                 padding: EdgeInsets.all(35.0),
                 elevation: 2.0,
                 disabledElevation: 2.0,
                 shape: RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(18.0),
                   //borderRadius: new BorderRadius.circular(0.0),
-                  side: BorderSide(color: Colors.blue[400]),
+                  side: BorderSide(color: Colors.deepOrange),
                 ),
                 onPressed: () => navigateToUncheckedJustifications(),
               ),
@@ -126,16 +127,16 @@ class _MenuListState extends State<MenuList> {
               child: new RaisedButton(
                 child: new Text("Faltas da semana"),
                 color: Colors.white,
-                textColor: Colors.blue[500],
+                textColor: Colors.orange[700],
                 disabledColor: Colors.white,
-                disabledTextColor: Colors.blue[400],
+                disabledTextColor: Colors.orange[700],
                 padding: EdgeInsets.all(35.0),
                 elevation: 2.0,
                 disabledElevation: 2.0,
                 shape: RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(18.0),
                   //borderRadius: new BorderRadius.circular(0.0),
-                  side: BorderSide(color: Colors.blue[400]),
+                  side: BorderSide(color: Colors.deepOrange),
                  ),
                 onPressed: () => navigateToWeekAbsencesReview(),
               ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/models/user.dart';
 import 'package:pg_check/services/auth.dart';
+import 'package:pg_check/shared/loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
@@ -21,14 +22,14 @@ class ProfessorHome extends StatelessWidget {
       appBar: new AppBar(
         leading: Icon(Icons.school),
         title: new Text("Seus Alunos"),
-        backgroundColor: Colors.blue[400],
+        backgroundColor: Colors.orange[700],
         elevation: 0.0,
         actions: <Widget>[
           FlatButton.icon(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.person,),
             onPressed: () async {
               await _auth.signOut();  // and does nothing else because there's a streaming 
-                                      // already hearing the value of User and when it is null
+                                      // already/*  */ hearing the value of User and when it is null
                                       // it renders the Authenticate screen instead of Home
             },
             label: Text(translation('logout_button')),
@@ -51,7 +52,6 @@ class StudentListPage extends StatefulWidget {
 
 class _StudentListPageState extends State<StudentListPage> {
   Future _data;
-
 
   Future getStudents() async {
     var firestone = Firestore.instance;
@@ -78,22 +78,22 @@ class _StudentListPageState extends State<StudentListPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.orange[700],
       child: FutureBuilder(
         future: _data,
         builder: (_, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-              child: CircularProgressIndicator(), //Text("Loading..."),
+              child: Loading(), 
             );
           } else {
             return ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (_, index){
-
                 return Card(
                   child: ListTile(
-                    leading: Icon(Icons.person_outline),
-                    title: Text(snapshot.data[index].data['name']),
+                    leading: Icon(Icons.person_outline, color: Colors.orange[700]),
+                    title: Text(snapshot.data[index].data['name'], style: TextStyle(color: Colors.orange[700]),),
                     onTap: () => navigateToAbsences(snapshot.data[index]),
                   ),
                 );
@@ -146,17 +146,20 @@ class _AbsencesPageState extends State<AbsencesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.orange[700],
+        elevation: 0.0,
        // leading: Icon(Icons.person_outline),
         title: Text("Faltas de ${widget.student.data['name']}"),
        ),
       body: Container(
+        color: Colors.orange[700],
         child: FutureBuilder(
           future: _data,
           builder: (_, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
                 
-                child: CircularProgressIndicator(), //Text("Loading..."),
+                child: Loading(),
               );
             } else if (snapshot.data.isNotEmpty) {
               return ListView.builder(
@@ -164,15 +167,15 @@ class _AbsencesPageState extends State<AbsencesPage> {
                   itemBuilder: (_, index){
                     return Card(
                       child: ListTile(
-                        leading: Icon(Icons.calendar_today),
-                        title: Text(DateFormat('yMd').format(DateTime.parse(snapshot.data[index].data['date'].toDate().toString()))),
+                        leading: Icon(Icons.calendar_today, color: Colors.orange[700]),
+                        title: Text(DateFormat('yMd').format(DateTime.parse(snapshot.data[index].data['date'].toDate().toString())), style: TextStyle(color: Colors.orange[700]),),
                         onTap: () => navigateToDetails(snapshot.data[index]),
                       ),
                     );
                 });
           } else {
                 //return Center(child: Text("There are no registered absences for that student"),);
-                return Center(child: Text("Não existem faltas registradas para este aluno."),);
+                return Center(child: Text("Não existem faltas registradas para este aluno.", style: TextStyle(color: Colors.white),),);
           }
         }),
       ),
@@ -193,22 +196,25 @@ class _DetailsPageState extends State<DetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.orange[700],
       appBar: AppBar(
+        backgroundColor: Colors.orange[700],
+        elevation: 0.0,
         title: Text(DateFormat('yMd').format(DateTime.parse(widget.absence.data['date'].toDate().toString()))),
       ),
       body: ListView(
         children: <Widget> [
           Card(
             child: ListTile(
-              leading: Icon(widget.absence.data['justified'] ? Icons.sentiment_satisfied: Icons.sentiment_dissatisfied),
-              title: Text("Justificado:"),
-              subtitle: Text( (widget.absence.data['justified']) ? "Sim" : "Não" ),
+              leading: Icon(widget.absence.data['justified'] ? Icons.sentiment_satisfied: Icons.sentiment_dissatisfied, color: Colors.orange[700]),
+              title: Text("Justificado:", style: TextStyle(color: Colors.orange[700])),
+              subtitle: Text( (widget.absence.data['justified']) ? "Sim" : "Não", style: TextStyle( color: widget.absence.data['justified'] ? Colors.yellow[400] : Color.fromRGBO(147, 107, 9, 100),)),
             ),
           ),
           Card(
             child: ListTile(
-              leading: Icon(widget.absence.data['justified'] ? Icons.message: Icons.speaker_notes_off),
-              title: Text("Justificativa:"),
+              leading: Icon(widget.absence.data['justified'] ? Icons.message: Icons.speaker_notes_off, color: Colors.orange[700]),
+              title: Text("Justificativa:", style: TextStyle(color: Colors.orange[700])),
               subtitle: Text(widget.absence.data['justification']),
             ),
           ),
