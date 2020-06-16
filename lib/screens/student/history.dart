@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel;
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
+import 'package:pg_check/shared/loading.dart';
 
 /*
   Essa página se refere ao histórico de faltas do aluno
@@ -136,7 +137,18 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
   @override 
   Widget build(BuildContext context) {
     return 
-    Padding(
+    FutureBuilder(
+        future: _data,
+        builder: (_, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Loading();
+          } else{
+              if (_isInitialized == false) {
+                createAbsenceEvents(snapshot);
+                _isInitialized = true;
+              }
+              return 
+              Padding(
           padding: const EdgeInsets.all(10.0),
           child: 
           Container(padding: EdgeInsets.only(top: 20),
@@ -144,19 +156,7 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
           Card(
             child:
     Container(
-      child: FutureBuilder(
-        future: _data,
-        builder: (_, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(), //Text("Loading..."),
-            );
-          } else{
-              if (_isInitialized == false) {
-                createAbsenceEvents(snapshot);
-                _isInitialized = true;
-              }
-              return SingleChildScrollView(
+      child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
                     Card(
@@ -198,10 +198,13 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
                     )
                   ]
                 )
+              )
+              )
+              )
+              )
               );
           }
         }
-      ),))
-    ));
+      );
   }
 }
