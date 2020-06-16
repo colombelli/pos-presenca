@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pg_check/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:pg_check/shared/loading.dart';
 
 /* pega faltas da coleção absences do aluno que não tenham justificativa, ele seleciona a que quiser e
 insere seru motivo */
@@ -47,7 +48,7 @@ class _StudentAbsencesJustificationState extends State<StudentAbsencesJustificat
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
                 
-                child: CircularProgressIndicator(),
+                child: Loading(),
               );
             } else if (snapshot.data.isNotEmpty) {
               return ListView.builder(
