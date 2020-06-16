@@ -23,19 +23,12 @@ class JustificationsReview extends StatelessWidget {
       appBar: new AppBar(
 //        leading: Icon(Icons.school),
         title: new Text("Justificativas"),
-        backgroundColor: Colors.blue[400],
+        backgroundColor: Colors.orange[700],
         elevation: 0.0,
-        actions: <Widget>[
-          FlatButton.icon(
-            icon: Icon(Icons.person),
-            onPressed: () async {
-              await _auth.signOut();
-            },
-            label: Text(translation('logout_button')),
-          )
-        ]
+        
       ),
-      body: JustificationsList(userInfo: userInfo,),
+      body: 
+      JustificationsList(userInfo: userInfo,),
     );
   }
 }
@@ -88,6 +81,7 @@ class _JustificationsListState extends State<JustificationsList> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.orange[700],
       child: FutureBuilder(
         future: _data,
         builder: (_, snapshot) {
@@ -106,7 +100,8 @@ class _JustificationsListState extends State<JustificationsList> {
               itemCount: snapshot.data.length,
             );
           } else {
-            return Center(child: Text("Não existem novas justificativas."),);
+            return Center(child: Text("Não existem novas justificativas.", 
+                style: TextStyle(color: Colors.white),),);
           }
         }
       ),
@@ -175,10 +170,11 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                   children: <Widget>[
                 new Icon(
                   Icons.person,
+                  color: Colors.orange[700],
                 ),
                 new Text(
                   "    ${widget.student.data['name']}",
-                  style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                  style: new TextStyle(fontSize: 17, color: Colors.orange[700]),
                 ),
                   ],
                 ),
@@ -195,7 +191,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                         child: new Center(
                           child: new Icon(
                             expandFlag ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                            color: Colors.blue[400],
+                            color: Colors.orange[700],
                             size: 27.0,
                           ),
                         ),
@@ -231,18 +227,18 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                         itemBuilder: (BuildContext context, int index) {
                           return new Container(
                             decoration:
-                                new BoxDecoration(border: new Border.all(width: 1.0, color: Colors.grey), color: Colors.blue[50]),
+                                new BoxDecoration(border: new Border.all(width: 1.0, color: Colors.deepOrange), color: Colors.orange[100]),
                             child: new ListTile(
                               leading: new Icon(
                                 Icons.date_range,
-                                color: Colors.grey[900],
+                                color: Colors.orange[700],
                               ),
                               title: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   new Text(
                                     DateFormat('yMd').format(DateTime.parse(snapshot.data[index].data['date'].toDate().toString())),
-                                    style: new TextStyle(color: Colors.black),
+                                    style: TextStyle(color: Colors.orange[700]),
                                   ),
                                 new FlatButton(
                                   padding: EdgeInsets.all(10.0),
@@ -251,7 +247,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
 //                                      Icon(Icons.visibility), // ! Decidir com/sem icon
                                       Text(
                                         "  Visualizar",
-                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange[700]),
                                       )
                                     ]
                                   ),
@@ -306,7 +302,7 @@ class ExpandableContainer extends StatelessWidget {
       height: expanded ? expandedHeight : collapsedHeight,
       child: new Container(
         child: child,
-        decoration: new BoxDecoration(border: new Border.all(width: 1.0, color: Colors.blue)),
+        decoration: new BoxDecoration(border: new Border.all(width: 1.0, color: Colors.deepOrange)),
       ),
     );
   }
@@ -363,7 +359,7 @@ class _JustificationDetailsState extends State<JustificationDetails> {
                     toastLength: Toast.LENGTH_SHORT,
                     gravity: ToastGravity.BOTTOM,
                     timeInSecForIosWeb: 2,
-                    backgroundColor: Colors.orange[600],
+                    backgroundColor: Colors.orange[700],
                     textColor: Colors.white,
                     fontSize: 12.0
                   );
@@ -380,7 +376,7 @@ class _JustificationDetailsState extends State<JustificationDetails> {
                     toastLength: Toast.LENGTH_SHORT,
                     gravity: ToastGravity.BOTTOM,
                     timeInSecForIosWeb: 2,
-                    backgroundColor: Colors.orange[600],
+                    backgroundColor: Colors.orange[700],
                     textColor: Colors.white,
                     fontSize: 12.0,
                   );

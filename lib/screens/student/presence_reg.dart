@@ -120,30 +120,32 @@ class _StudentPresenceRegistrationState extends State<StudentPresenceRegistratio
 
     
 
-    return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Column(
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
-                child: RaisedButton(
-                    color: Colors.orangeAccent,
+              Container(
+              height: 100,
+              width: 300,
+              child:
+              Card(
+              color: Colors.white,
+              child:
+              Container( 
+                height: 50,
+                width: 50,
+                child:
+                  RaisedButton(
+                    color: Colors.deepOrange,
                     textColor: Colors.white,
                     splashColor: Colors.deepOrange,
                     onPressed: scan,
                     child: const Text('START CAMERA SCAN')
                 ),
               )
-              ,
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                child: Text(_barcodeString, textAlign: TextAlign.center,),
               )
-              ,
+              )
             ],
-          )
-        );   
+          );
+         
   }
 }
 

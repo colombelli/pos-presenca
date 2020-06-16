@@ -31,7 +31,7 @@ class _StudentHomeState extends State<StudentHome> {
     void initState() { 
       super.initState();
       bodyWidget =  History(userInfo: widget.userInfo,); // Text("some home content here");
-      selected = "Histórico de faltas";
+      selected = 'Histórico de faltas';
     }
 
   @override
@@ -103,7 +103,8 @@ class _StudentHomeState extends State<StudentHome> {
                   decoration: BoxDecoration(
                     color: Colors.orange[700],
                     image: new DecorationImage(
-                      image: new NetworkImage('https://i.redd.it/fv81xpbuks641.jpg'),
+                      image: new NetworkImage('https://i.redd.it/rva3wkyxvji41.jpg'),
+                      //new AssetImage('assets/qr.png'),
                       fit: BoxFit.cover
                     )
                     ),
