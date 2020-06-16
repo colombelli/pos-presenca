@@ -42,7 +42,7 @@ class _RegisterState extends State<Register> {
       items.add(
         DropdownMenuItem(
           value: program, 
-          child: Text(program.name)
+          child: Text(program.name, style: TextStyle(color: Colors.orange[700]),)
         )
       );
     }
@@ -84,9 +84,9 @@ class _RegisterState extends State<Register> {
 
 
     return loading ? Loading() :  Scaffold (
-        backgroundColor: Colors.blue[100],
+        backgroundColor: Colors.orange[700],
         appBar: AppBar(
-          backgroundColor: Colors.blue[400],
+          backgroundColor: Colors.orange[700],
           elevation: 0.0,
           title: Text(translation('sign_up_title')),
           actions: <Widget>[
@@ -183,7 +183,7 @@ class _RegisterState extends State<Register> {
                 
                 
                     ListTile(
-                      title: Text(translation("student")),
+                      title: Text(translation("student"), style: TextStyle(color: Colors.white),),
                       leading: Radio(
                         value: "student",
                         groupValue: userType,
@@ -196,7 +196,7 @@ class _RegisterState extends State<Register> {
                     ),
 
                     ListTile(
-                      title: Text(translation("professor")),
+                      title: Text(translation("professor"), style: TextStyle(color: Colors.white),),
                       leading: Radio(
                         value: "professor",
                         groupValue: userType,
@@ -233,7 +233,7 @@ class _RegisterState extends State<Register> {
                 ),
                 SizedBox(height: 20.0),
                 RaisedButton(
-                  color: Colors.indigo,
+                  color: Colors.deepOrange,
                   child: Text(
                     translation('sign_up_text'), 
                     style: TextStyle(color: Colors.white)

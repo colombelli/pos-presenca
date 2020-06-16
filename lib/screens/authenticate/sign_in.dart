@@ -31,9 +31,9 @@ class _SignInState extends State<SignIn> {
     final translation = (String s) => AppLocalizations.of(context).translate(s);
 
     return loading ? Loading() : Scaffold (
-      backgroundColor: Colors.blue[100],
+      backgroundColor: Colors.orange[700],
       appBar: AppBar(
-        backgroundColor: Colors.blue[400],
+        backgroundColor: Colors.orange[700],
         elevation: 0.0,
         title: Text(translation('sign_in_title')),
         actions: <Widget>[
@@ -54,6 +54,7 @@ class _SignInState extends State<SignIn> {
             children: <Widget>[
               SizedBox(height: 20.0),
               TextFormField(
+                cursorColor: Colors.deepOrange,
                 decoration: textInputDecoration.copyWith(
                   hintText: translation("email_hint")
                 ),
@@ -64,6 +65,7 @@ class _SignInState extends State<SignIn> {
               ),
               SizedBox(height: 20.0),
               TextFormField(
+                cursorColor: Colors.deepOrange,
                 decoration: textInputDecoration.copyWith(
                   hintText: translation("password_hint")
                 ),
@@ -75,10 +77,12 @@ class _SignInState extends State<SignIn> {
               ),
               SizedBox(height: 20.0),
               RaisedButton(
-                color: Colors.indigo,
+                color: Colors.deepOrange ,//orange[400],
+                splashColor: Colors.grey,
+                elevation: 10.0,
                 child: Text(
                   translation('sign_in_text'), 
-                  style: TextStyle(color: Colors.white)
+                  style: TextStyle(color: Colors.white),
                   ),
                 onPressed: () async {
                   if(_formKey.currentState.validate()){

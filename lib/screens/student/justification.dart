@@ -112,7 +112,7 @@ class _DetailsPageState extends State<DetailsPage> {
   Widget build(BuildContext context) {
 
     Widget continueButton = FlatButton(
-        child: Text("Continuar"),
+        child: Text("Continuar", style: TextStyle(color: Colors.orange[700]),),
         onPressed:  () {
           Navigator.popAndPushNamed(context, '/');
         },

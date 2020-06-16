@@ -57,7 +57,7 @@ class _PresenceRegistrationState extends State<PresenceRegistration> {
       appBar: AppBar(
         leading: Icon(Icons.supervisor_account),
         title: Text(translation('presence_registration_title')),
-        backgroundColor: Colors.blue[400],
+        backgroundColor: Colors.orange[700],
         elevation: 0.0,
       ),
       body: Container(
@@ -71,11 +71,11 @@ class _PresenceRegistrationState extends State<PresenceRegistration> {
                 ),
               ),
             ),
-            Expanded(
-              child:  Center(
-                child: Text(_dataString)
-              ),
-            ),
+//            Expanded(
+//              child:  Center(
+//                child: Text(_dataString)
+//              ),
+//            ),
           ],
         )
       )
