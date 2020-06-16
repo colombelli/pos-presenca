@@ -133,8 +133,7 @@ class _DetailsPageState extends State<DetailsPage> {
     );
 
     Widget sendButton = FlatButton(
-        color: Colors.orange[700],
-        child: Text("Enviar"),
+        child: Text("Enviar", style: TextStyle(color: Colors.orange[700]),),
         onPressed:  () async {
               if(justification.isNotEmpty) {
                 await setJustification();
@@ -153,7 +152,7 @@ class _DetailsPageState extends State<DetailsPage> {
     );
     
     Widget cancelButton = FlatButton(
-        child: Text("Cancelar"),
+        child: Text("Cancelar", style: TextStyle(color: Colors.orange[700]),),
         onPressed:  () {Navigator.pop(context);},
     );
 
@@ -195,8 +194,8 @@ class _DetailsPageState extends State<DetailsPage> {
               Padding(
               padding: const EdgeInsets.all(8.0),
               child:
-
               TextFormField(
+//                cursorColor: Colors.deepOrange,
                 keyboardType: TextInputType.multiline,
                 maxLines: 10,
                 controller: TextEditingController(),
@@ -219,7 +218,7 @@ class _DetailsPageState extends State<DetailsPage> {
               RaisedButton(
                     color: Colors.orange[700],
                     textColor: Colors.white,
-                    splashColor: Colors.blueGrey,
+                    splashColor: Colors.deepOrange,
                     onPressed: () => {
                       showDialog(
                         context: context,
@@ -267,7 +266,7 @@ class _JustificationPageState extends State<JustificationPage> {
 
     // ! investigar como voltar melhor tá díficil
     Widget continueButton = FlatButton(
-        child: Text("Continuar"),
+        child: Text("Continuar", style: TextStyle(color: Colors.orange[700]),),
         onPressed:  () {
           Navigator.popAndPushNamed(context, '/');
         },

@@ -93,7 +93,7 @@ class _StudentHomeState extends State<StudentHome> {
               DrawerHeader(
                   child: Text(""),
                   decoration: BoxDecoration(
-                    color: Colors.orange[500]
+                    color: Colors.orange[700]
                     )
                  ),
               _createDrawerItem(
