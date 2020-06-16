@@ -55,8 +55,8 @@ class _StudentAbsencesJustificationState extends State<StudentAbsencesJustificat
                   itemBuilder: (_, index){
                     return Card(
                       child: ListTile(
-                        leading: Icon(Icons.calendar_today),
-                        title: Text(DateFormat('yMd').format(DateTime.parse(snapshot.data[index].data['date'].toDate().toString()))),
+                        leading: Icon(Icons.calendar_today, color: Colors.orange[700],),
+                        title: Text(DateFormat('yMd').format(DateTime.parse(snapshot.data[index].data['date'].toDate().toString())), style: TextStyle(color: Colors.orange[700]),),
                         onTap: () {
                           navigateToDetails(snapshot.data[index]);
                         },
@@ -65,7 +65,7 @@ class _StudentAbsencesJustificationState extends State<StudentAbsencesJustificat
                 });
           } else {
                 //return Center(child: Text("There are no registered absences for that student"),);
-                return Center(child: Text("Não existem faltas registradas para este aluno."),);
+                return Center(child: Text("Não existem faltas registradas para este aluno.", style: TextStyle(color: Colors.white),),);
           }
         }),
       );
@@ -133,6 +133,7 @@ class _DetailsPageState extends State<DetailsPage> {
     );
 
     Widget sendButton = FlatButton(
+        color: Colors.orange[700],
         child: Text("Enviar"),
         onPressed:  () async {
               if(justification.isNotEmpty) {
@@ -170,7 +171,11 @@ class _DetailsPageState extends State<DetailsPage> {
     
     
     return Scaffold(
+      backgroundColor: Colors.orange[700],
+      
       appBar: AppBar(
+        elevation: 0.0,
+        backgroundColor: Colors.orange[700],
         title: Text(DateFormat('yMd').format(DateTime.parse(widget.absence.data['date'].toDate().toString()))),
       ),
       body: ListView(
@@ -182,8 +187,8 @@ class _DetailsPageState extends State<DetailsPage> {
             child: Column(
               children: <Widget> [
                 ListTile(
-                  leading: Icon(Icons.message),
-                  title: Text("Justificativa:"),
+                  leading: Icon(Icons.message, color: Colors.orange[700]),
+                  title: Text("Justificativa:", style: TextStyle(color: Colors.orange[700]),),
                   subtitle: Text(widget.absence.data['justification']),
                 ),
               
@@ -212,7 +217,7 @@ class _DetailsPageState extends State<DetailsPage> {
               SizedBox(height: 10),
 
               RaisedButton(
-                    color: Colors.blue,
+                    color: Colors.orange[700],
                     textColor: Colors.white,
                     splashColor: Colors.blueGrey,
                     onPressed: () => {
@@ -290,6 +295,7 @@ class _JustificationPageState extends State<JustificationPage> {
         title: Text("Faltas de ${widget.userInfo.name}"),
         actions: <Widget>[
           MaterialButton(
+            color: Colors.orange[700],
             child: Text("Enviar", style: TextStyle(color: Colors.white)),
             onPressed: () async {
               if(justification.isNotEmpty) {
