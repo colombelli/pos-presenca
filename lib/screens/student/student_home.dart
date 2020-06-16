@@ -25,10 +25,13 @@ class _StudentHomeState extends State<StudentHome> {
 
 
   Widget bodyWidget;
+  var selected;
+
   @override
     void initState() { 
       super.initState();
       bodyWidget =  History(userInfo: widget.userInfo,); // Text("some home content here");
+      selected = "Histórico de faltas";
     }
 
   @override
@@ -40,23 +43,28 @@ class _StudentHomeState extends State<StudentHome> {
 
     Widget _createDrawerItem(
     {IconData icon, String text, Widget newBodyWidget}) {
-      return ListTile(
+      return Container(
+        color: selected == text ? Colors.grey[200] : Colors.white,
+        child: ListTile(
         title: Row(
           children: <Widget>[
-            Icon(icon),
+            Icon(icon, color: selected == text ? Colors.black : Colors.black,),
             Padding(
               padding: EdgeInsets.only(left: 8.0),
-              child: Text(text),
+              child: Text(text,
+                style: TextStyle(color: selected == text ? Colors.black : Colors.black,),
+              ),
             )
           ],
         ),
         onTap: () => {
           setState(() {
             bodyWidget = newBodyWidget;
+            selected = text;
             Navigator.pop(context);
           })
         },
-      );
+      ));
     }
     
     Widget _createLogoutDrawerItem() {
@@ -93,9 +101,14 @@ class _StudentHomeState extends State<StudentHome> {
               DrawerHeader(
                   child: Text(""),
                   decoration: BoxDecoration(
-                    color: Colors.orange[700]
+                    color: Colors.orange[700],
+                    image: new DecorationImage(
+                      image: new NetworkImage('https://i.redd.it/fv81xpbuks641.jpg'),
+                      fit: BoxFit.cover
                     )
-                 ),
+                    ),
+                  ),
+                 
               _createDrawerItem(
                 icon: Icons.history,
                 text: 'Histórico de faltas',

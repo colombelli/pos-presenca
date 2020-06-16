@@ -5,6 +5,7 @@ import 'package:pg_check/services/auth.dart';
 import 'package:pg_check/app_localizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:pg_check/shared/loading.dart';
 
 /* pega faltas da coleção absences do aluno que não tenham justificativa, ele seleciona a que quiser e
 insere seu motivo */
@@ -92,7 +93,7 @@ class _JustificationsListState extends State<JustificationsList> {
         builder: (_, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-              child: CircularProgressIndicator(), //Text("Loading..."),
+              child: Loading(), //Text("Loading..."),
             );
           } else if (snapshot.data.isNotEmpty) {
             return ListView.builder(
