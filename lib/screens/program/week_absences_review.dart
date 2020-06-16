@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/services/auth.dart';
 import 'package:pg_check/models/user.dart';
+import 'package:pg_check/shared/loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
@@ -25,17 +26,17 @@ class WeekAbsencesReview extends StatelessWidget {
       appBar: new AppBar(
 //        leading: Icon(Icons.school),
         title: new Text("Faltas da semana"),
-        backgroundColor: Colors.blue[400],
+        backgroundColor: Colors.orange[700],
         elevation: 0.0,
-        actions: <Widget>[
-          FlatButton.icon(
-            icon: Icon(Icons.person),
-            onPressed: () async {
-              await _auth.signOut();
-            },
-            label: Text(translation('logout_button')),
-          )
-        ]
+//        actions: <Widget>[
+//          FlatButton.icon(
+//            icon: Icon(Icons.person),
+//            onPressed: () async {
+//              await _auth.signOut();
+//            },
+//            label: Text(translation('logout_button')),
+//          )
+//        ]
       ),
       body: WeekAbsencesList(userInfo: userInfo,),
     );
@@ -88,12 +89,13 @@ class _WeekAbsencesListState extends State<WeekAbsencesList> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.orange[700],
       child: FutureBuilder(
         future: _data,
         builder: (_, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-              child: CircularProgressIndicator(), //Text("Loading..."),
+              child: Loading(), //Text("Loading..."),
             );
           } else if (snapshot.data.isNotEmpty) {
             return ListView.builder(
@@ -106,7 +108,7 @@ class _WeekAbsencesListState extends State<WeekAbsencesList> {
               itemCount: snapshot.data.length,
             );
           } else {
-            return Center(child: Text("Não existem faltas não notificadas desta semana."),);
+            return Center(child: Text("Não existem faltas não notificadas desta semana.", style: TextStyle(color: Colors.orange[700]),),);
           }
         }
       ),
@@ -192,7 +194,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
       child: new Column(
         children: <Widget>[
           new Container(
-            color: Colors.blue[50],
+            color: Colors.white,
             padding: new EdgeInsets.symmetric(horizontal: 5.0),
             child: new Row(
              mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -202,10 +204,11 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                   children: <Widget>[
                 new Icon(
                   Icons.person,
+                  color: Colors.orange[700],
                 ),
                 new Text(
                   "    ${widget.student.data['name']}",
-                  style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                  style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.orange[700]),
                 ),
                   ],
                 ),
@@ -215,8 +218,8 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                       padding: EdgeInsets.all(10.0),
                       child: Row(
                         children: <Widget>[
-                          Icon(Icons.notification_important),
-                          Text("Notificar")
+                          Icon(Icons.notification_important, color: Colors.orange[700]),
+                          Text("Notificar", style: TextStyle(color: Colors.orange[700]),)
                         ]
                       ),
                       onPressed: () async {
@@ -230,13 +233,13 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                         height: 50.0,
                         width: 50.0,
                         decoration: new BoxDecoration(
-                          color: Colors.blue[250],
+                          color: Colors.white,
                           shape: BoxShape.circle,
                         ),
                         child: new Center(
                           child: new Icon(
                             expandFlag ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                            color: Colors.blue[400],
+                            color: Colors.orange[700],
                             size: 27.0,
                           ),
                         ),
