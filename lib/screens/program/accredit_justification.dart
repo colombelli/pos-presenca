@@ -373,7 +373,7 @@ class _JustificationDetailsState extends State<JustificationDetails> {
                     toastLength: Toast.LENGTH_SHORT,
                     gravity: ToastGravity.BOTTOM,
                     timeInSecForIosWeb: 2,
-                    backgroundColor: Colors.orange[700],
+                    backgroundColor: Colors.orange[500],
                     textColor: Colors.white,
                     fontSize: 12.0
                   );
@@ -392,7 +392,7 @@ class _JustificationDetailsState extends State<JustificationDetails> {
                     toastLength: Toast.LENGTH_SHORT,
                     gravity: ToastGravity.BOTTOM,
                     timeInSecForIosWeb: 2,
-                    backgroundColor: Colors.orange[700],
+                    backgroundColor: Colors.orange[500],
                     textColor: Colors.white,
                     fontSize: 12.0,
                   );
