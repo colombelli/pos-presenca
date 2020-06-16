@@ -336,22 +336,36 @@ class _JustificationDetailsState extends State<JustificationDetails> {
     return Scaffold(
       key: globalKey,
       appBar: AppBar(
+        elevation: 0.0,
+        backgroundColor: Colors.orange[700],
         title: Text(DateFormat('yMd').format(DateTime.parse(widget.absence.data['date'].toDate().toString()))),
       ),
-      body: Column(
+      body: Container(
+        padding: EdgeInsets.all(10),
+        color: Colors.orange[700],
+        child:
+        Card(
+          child:
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget> [
           Card(
             child: ListTile(
-              leading: Icon(widget.absence.data['justified'] ? Icons.message: Icons.speaker_notes_off),
-              title: Text("Justificativa:"),
+              leading: Icon(widget.absence.data['justified'] ? Icons.message: Icons.speaker_notes_off, color: Colors.orange[700]),
+              title: Text("Justificativa:", style: TextStyle(color: Colors.orange[700]),),
               subtitle: Text(widget.absence.data['justification']),
             ),
           ),
+          SizedBox(height: 20,),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
+              
               RaisedButton(
-                child: Text("Rejeitar"),
+                elevation: 6,
+                child: Text("Rejeitar", style: TextStyle(color:Colors.white),),
+                color: Colors.deepOrange,
                 onPressed:  () {
                   changeJustificationStatus("rejected");
                   Fluttertoast.showToast(
@@ -369,7 +383,9 @@ class _JustificationDetailsState extends State<JustificationDetails> {
                 },                
               ),
               RaisedButton(
-                child: Text("Aceitar"),
+                elevation: 6,
+                child: Text("Aceitar", style: TextStyle(color:Colors.white),),
+                color: Colors.deepOrange,
                 onPressed:  () {
                   changeJustificationStatus("accredited");
                   Fluttertoast.showToast(msg: "Justificativa de ${widget.student.data['name']} foi aceita.",
@@ -383,11 +399,13 @@ class _JustificationDetailsState extends State<JustificationDetails> {
                   //                  _showToast(context, true);
                   Navigator.pop(context);
                 },                 
-              )
+              ),
             ],
-          )
+          ),
+          
         ]
-      ),
+      )),
+      )
     );
   }
 
