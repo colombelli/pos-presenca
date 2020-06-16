@@ -108,7 +108,29 @@ class _WeekAbsencesListState extends State<WeekAbsencesList> {
               itemCount: snapshot.data.length,
             );
           } else {
-            return Center(child: Text("Não existem faltas não notificadas desta semana.", style: TextStyle(color: Colors.orange[700]),),);
+            return Center(
+              child: Container(
+//                padding: EdgeInsets.all(8.0),
+//                decoration: new BoxDecoration(
+//                  borderRadius: BorderRadius.all(Radius.circular(20)),
+//                  border: new Border.all(
+//                    width: 1.0,
+//                    color: Colors.deepOrange
+//                  ),
+//                 color: Colors.deepOrange
+//                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(Icons.import_contacts, color: Colors.white),
+                    Text(
+                      "Não existem novas faltas.",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                )
+              ),
+            );
           }
         }
       ),
@@ -295,7 +317,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                   return ExpandableContainer( 
                     expanded: expandFlag,
                     expandedHeight: 69.0,
-                    child :Center(child: Text("Não existem novas justificativas.", style: TextStyle(color: Colors.orange[700]),),),
+                    child :Center(child: Text("Não existem novas justificativas.", style: TextStyle(color: Colors.white),),),
                   );
                 }
               }

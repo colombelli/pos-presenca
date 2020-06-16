@@ -316,6 +316,7 @@ class _JustificationPageState extends State<JustificationPage> {
       body: Container(
         width: 100,
         child: TextFormField(
+          cursorColor: Colors.deepOrange,
           style: TextStyle(
             height: 100
           ),
