@@ -12,7 +12,8 @@ import 'package:pg_check/screens/authenticate/program_list.dart';
 class Register extends StatefulWidget {
 
   final Function toggleView;
-  Register({ this.toggleView });
+  final List<DropdownMenuItem<Program>> availablePrograms;
+  Register({ this.toggleView, this.availablePrograms });
 
   @override
   _RegisterState createState() => _RegisterState();
@@ -31,59 +32,33 @@ class _RegisterState extends State<Register> {
   bool loading = false;
 
   String userType;
+  
   Program selectedProgram;
-  
-  
-  List<DropdownMenuItem<Program>> availablePrograms;
-  List<DropdownMenuItem<Program>> buildDropdownMenuItems(List programs){
-
-    List<DropdownMenuItem<Program>> items = List();
-    for (Program program in programs) {
-      items.add(
-        DropdownMenuItem(
-          value: program, 
-          child: Text(program.name, style: TextStyle(color: Colors.orange[700]),)
-        )
-      );
-    }
-    return items;
-  }
 
   @override
   void initState() { 
     super.initState();
     userType="student";
+
+    selectedProgram = widget.availablePrograms[0].value;
+
   }
 
   @override
   Widget build(BuildContext context) {
 
     final translation = (String s) => AppLocalizations.of(context).translate(s);
-    final programFireBase = Provider.of<QuerySnapshot>(context);
+    
 
-    final List<Program> programs = [];
-
-
-    if(programFireBase == null){
-      loading = true;
-    } else {
-      loading = false;
-
-      for (var doc in programFireBase.documents) {
-        programs.add(Program(uid: doc.documentID, name: doc.data["name"]));
-      }
-      availablePrograms = buildDropdownMenuItems(programs);
-    }
-
-
+/*
     callBackChangeSelected(Program selected){
       setState(() {
         selectedProgram = selected;
       });
-    }
+    }*/
 
 
-    return loading ? Loading() :  Scaffold (
+    return Scaffold (
         backgroundColor: Colors.orange[700],
         appBar: AppBar(
           backgroundColor: Colors.orange[700],
@@ -107,13 +82,15 @@ class _RegisterState extends State<Register> {
               children: <Widget>[
                 SizedBox(height: 20.0),
                 
-                //ProgramList(availablePrograms: availablePrograms, 
-                 //           notifyParent: callBackChangeSelected, 
-                  //          selectedProgram: selectedProgram),
 
+                /*
+                ProgramList(availablePrograms: availablePrograms, 
+                            notifyParent: callBackChangeSelected, 
+                            selectedProgram: selectedProgram),
 
+                */
 
-
+/*
                 StreamBuilder<QuerySnapshot>(
                   stream: Firestore.instance.collection("programs").snapshots(),
                   builder: (context, snapshot) {
@@ -151,6 +128,7 @@ class _RegisterState extends State<Register> {
                     }
                   }),
 
+*/
 
 
 
@@ -159,17 +137,19 @@ class _RegisterState extends State<Register> {
 
 
 
-/*
                 DropdownButton(
                   value: selectedProgram,
-                  items: availablePrograms,
-                  onChanged: (Program selected) {
+                  items: widget.availablePrograms,
+                  
+                  onChanged: (selected) {
+                    print("TRYING TO SET");
+                    print(selected.name);
                     setState(() {
                       selectedProgram = selected;
                     });
                   },
                 ),
-*/
+
 
 
 
