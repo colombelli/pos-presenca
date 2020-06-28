@@ -26,6 +26,7 @@ class _RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
 
   // text field state
+  String name = '';
   String email = '';
   String password = '';
   String error = '';
@@ -48,14 +49,6 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
 
     final translation = (String s) => AppLocalizations.of(context).translate(s);
-    
-
-/*
-    callBackChangeSelected(Program selected){
-      setState(() {
-        selectedProgram = selected;
-      });
-    }*/
 
 
     return Scaffold (
@@ -81,86 +74,19 @@ class _RegisterState extends State<Register> {
             child: Column(
               children: <Widget>[
                 SizedBox(height: 20.0),
-                
-
-                /*
-                ProgramList(availablePrograms: availablePrograms, 
-                            notifyParent: callBackChangeSelected, 
-                            selectedProgram: selectedProgram),
-
-                */
-
-/*
-                StreamBuilder<QuerySnapshot>(
-                  stream: Firestore.instance.collection("programs").snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData)
-                      loading = true;
-                    else {
-                      List<DropdownMenuItem> programItems = [];
-                      for (int i = 0; i < snapshot.data.documents.length; i++) {
-                        DocumentSnapshot snap = snapshot.data.documents[i];
-                        programItems.add(
-                          DropdownMenuItem(
-                            child: Text(
-                              snap.data["name"],
-                            ),
-                            value: "${snap.documentID}",
-                          ),
-                        );
-                      }
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          DropdownButton(
-                            items: programItems,
-                            onChanged: (selected) {
-                              setState(() {
-                                selectedProgram = selected;
-                              });
-                            },
-                            value: selectedProgram,
-                            isExpanded: false,
-                            
-                          ),
-                        ],
-                      );
-                    }
-                  }),
-
-*/
-
-
-
-
-
-
-
 
                 DropdownButton(
                   value: selectedProgram,
                   items: widget.availablePrograms,
                   
                   onChanged: (selected) {
-                    print("TRYING TO SET");
-                    print(selected.name);
                     setState(() {
                       selectedProgram = selected;
                     });
                   },
                 ),
 
-
-
-
-
-
-
-
-
-
                 SizedBox(height: 20.0),
-                
                 
                     ListTile(
                       title: Text(translation("student"), style: TextStyle(color: Colors.white),),
@@ -187,8 +113,17 @@ class _RegisterState extends State<Register> {
                         },
                       ),
                     ),
-                  
-
+                
+                SizedBox(height: 20.0),
+                TextFormField(
+                  decoration: textInputDecoration.copyWith(
+                    hintText: translation("name_hint"),
+                  ),
+                  validator: (value) => value.isEmpty ? translation('name_empty') : null,
+                  onChanged: (value){
+                    setState(() => name = value);
+                  },
+                ),
 
                 SizedBox(height: 20.0),
                 TextFormField(
@@ -221,7 +156,7 @@ class _RegisterState extends State<Register> {
                   onPressed: (){//() async {
                     if(_formKey.currentState.validate()){
                       print("BBBBBBBBBB");
-                      print(selectedProgram);
+                      print(selectedProgram.name);
                       print(email);
                       print(password);
                       print(userType);
