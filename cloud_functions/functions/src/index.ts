@@ -21,7 +21,7 @@ export const presenceRegistration = functions.https.onRequest((request, response
 
                 if (programInfo){
                     
-                    if (codeStr == programInfo.key){
+                    if (codeStr == programInfo.key || codeStr == programInfo.key2){
                         response.send(true)
                     } else {
                         response.send(false)

@@ -103,7 +103,7 @@ class _StudentHomeState extends State<StudentHome> {
                   decoration: BoxDecoration(
                     color: Colors.orange[700],
                     image: new DecorationImage(
-                      image: new NetworkImage('https://i.redd.it/rva3wkyxvji41.jpg'),
+                      image: AssetImage('assets/images/header.jpg'),
                       //new AssetImage('assets/qr.png'),
                       fit: BoxFit.cover
                     )
