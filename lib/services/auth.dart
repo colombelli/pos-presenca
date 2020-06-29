@@ -65,14 +65,18 @@ class AuthService {
         final CollectionReference profRef = Firestore.instance.collection('programs')
                                 .document(progID).collection('professors');
         await profRef.document(user.uid).setData({"name": newUser.name});
+        return _userFromFirebaseUser(user);
       }
       else if (newUser.type == "student"){
         final CollectionReference studRef = Firestore.instance.collection('programs')
                                 .document(progID).collection('students');
         await studRef.document(user.uid).setData({"name": newUser.name, "professor": professor});
+        return _userFromFirebaseUser(user);
       }
-
-      return _userFromFirebaseUser(user);
+      else {
+        throw("neither professor nor student type!");
+      }
+      
 
     } catch(e) {
       print(e.toString());
