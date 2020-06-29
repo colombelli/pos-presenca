@@ -58,6 +58,7 @@ class _ProfessorDropState extends State<ProfessorDrop> {
       }
       setState(() {
         availableProfessors = buildDropdownMenuItems(professors);
+        selectedProfessor = availableProfessors[0].value;
         loading = false;
       });
     } 
@@ -81,7 +82,6 @@ class _ProfessorDropState extends State<ProfessorDrop> {
         selectedProgram = widget.selectedProgram;
         availableProfessors = [];
         dbWrapper();
-        selectedProfessor = null;
       });
 
     }
@@ -91,8 +91,8 @@ class _ProfessorDropState extends State<ProfessorDrop> {
   
   @override
   void initState() { 
-    super.initState();
     dbWrapper();
+    super.initState();
   }
 
   @override
@@ -100,8 +100,6 @@ class _ProfessorDropState extends State<ProfessorDrop> {
     
     final translation = (String s) => AppLocalizations.of(context).translate(s);
 
-    print("sel prof");
-    print(selectedProfessor);
 
     if (widget.typeOfUser == "student") {
       return loading ? Loading() : Column(

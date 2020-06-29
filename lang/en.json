@@ -14,7 +14,7 @@
     "name_hint": "Name",
     "email_hint": "E-mail",
     "password_hint": "Password",
-    "professor_hint": "Select your advisor",
+    "professor_hint": "Loading professors...",
     "student": "Student",
     "professor": "Professor",
     "your_students": "Your Students",
