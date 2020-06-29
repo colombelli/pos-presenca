@@ -19,32 +19,48 @@ class _PresenceRegistrationState extends State<PresenceRegistration> {
   GlobalKey globalKey = new GlobalKey();
 
   final CollectionReference programsCollection = Firestore.instance.collection('programs');
-  Future<void> updateProgramHash(String key) async {
+  Future<void> updateProgramHash() async {
     return await programsCollection.document(widget.userInfo.uid).setData({
       'name': widget.userInfo.name,
-      'key': key,
+      'key': _dataString,
+      'key2': _key2
     });
   }
 
   Timer timer;
+  Timer timer2;
   var uuid = Uuid();
 
   String _dataString;
+  String _key2;
 
   changeQRcode() {
     String newEncodedString = uuid.v4();
-    updateProgramHash(newEncodedString);
-
     setState(() {
       _dataString = newEncodedString;
     });
+    updateProgramHash();
 
+    new Timer(const Duration(seconds: 10), () {
+      setState(() {
+        _key2 = _dataString;
+      });
+
+      updateProgramHash();
+    });
   }
+
+  
+
 
   @override
   void initState() {
     super.initState();
-    changeQRcode();
+    String newEncodedString = uuid.v4();
+    _dataString = newEncodedString;
+    _key2 = newEncodedString;
+    updateProgramHash();
+
     timer = Timer.periodic(Duration(seconds: 60), (Timer t) => changeQRcode());
   }
 
