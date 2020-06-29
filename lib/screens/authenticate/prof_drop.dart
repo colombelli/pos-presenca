@@ -24,8 +24,9 @@ class _ProfessorDropState extends State<ProfessorDrop> {
 
   bool loading = true;
   User selectedProfessor;
-  
+  Program selectedProgram;
   List<DropdownMenuItem<User>> availableProfessors;
+
   List<DropdownMenuItem<User>> buildDropdownMenuItems(List professors){
 
     List<DropdownMenuItem<User>> items = List();
@@ -55,9 +56,8 @@ class _ProfessorDropState extends State<ProfessorDrop> {
         professors.add(User(uid: doc.documentID, type: "professor", 
                             name: doc.data["name"], program: widget.selectedProgram.name));
       }
-      availableProfessors = buildDropdownMenuItems(professors);
-
       setState(() {
+        availableProfessors = buildDropdownMenuItems(professors);
         loading = false;
       });
     } 
@@ -66,6 +66,7 @@ class _ProfessorDropState extends State<ProfessorDrop> {
 
   @override
   void didUpdateWidget (ProfessorDrop oldWidget) {
+    
     if (selectedProfessor != widget.selectedProfessor) {
       
       setState(() {
@@ -73,16 +74,31 @@ class _ProfessorDropState extends State<ProfessorDrop> {
       });
 
     }
+
+    if (selectedProgram != widget.selectedProgram) {
+
+      setState(() {
+        selectedProgram = widget.selectedProgram;
+        availableProfessors = [];
+        dbWrapper();
+        selectedProfessor = null;
+      });
+
+    }
+
     super.didUpdateWidget(oldWidget);
   }
   
+  @override
+  void initState() { 
+    super.initState();
+    dbWrapper();
+  }
 
   @override
   Widget build(BuildContext context) {
     
     final translation = (String s) => AppLocalizations.of(context).translate(s);
-    
-    dbWrapper();
 
     print("sel prof");
     print(selectedProfessor);
