@@ -54,9 +54,6 @@ class _RegisterState extends State<Register> {
     final translation = (String s) => AppLocalizations.of(context).translate(s);
 
     callbackSetProfessor(newProfessor) {
-        print("it arrived here");
-        print(newProfessor.name);
-
         setState(() {
           selectedProfessor = newProfessor;
         });
@@ -169,24 +166,25 @@ class _RegisterState extends State<Register> {
                     translation('sign_up_text'), 
                     style: TextStyle(color: Colors.white)
                     ),
-                  onPressed: (){//() async {
+                  onPressed: () async {
                     if(_formKey.currentState.validate()){
-                      print("BBBBBBBBBB");
-                      print(selectedProgram.name);
-                      print(email);
-                      print(password);
-                      print(userType);
-                      //setState(() => loading = true);
 
-                      //dynamic result = await _auth.registerEmailPassword(email, password);
-                      //if(result == null){
-                        //setState(() {
-                          //error = translation('invalid_email_error');
-                          //setState(() => loading = false);
-                        }//);
+                      setState(() => loading = true);
+                      
+                      User newUser = User(uid: "willNotBeUsed", type: userType, name: name, 
+                                          program: selectedProgram.name);
+                      dynamic results = await _auth
+                      .registerEmailPassword(email, password, newUser, 
+                          selectedProgram.uid, selectedProfessor.name);
+                      if(results == null){
+                        print("ERROR IN THE USER CREATION");
+                        setState(() {
+                          error = translation('invalid_email_error');
+                          setState(() => loading = false);
+                        });
                       }
-                    //}
-                  //},
+                    }
+                  },
                 ),
                 SizedBox(height: 20.0),
                 Text(

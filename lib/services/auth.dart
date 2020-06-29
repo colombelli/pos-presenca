@@ -1,6 +1,6 @@
 import 'package:pg_check/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:pg_check/screens/authenticate/sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class AuthService {
@@ -41,7 +41,8 @@ class AuthService {
 
 
   // register
-  Future registerEmailPassword(String email, String password) async {
+  Future registerEmailPassword( String email, String password, User newUser, 
+                                String progID, String professor) async {
 
     try {
 
@@ -50,6 +51,27 @@ class AuthService {
         password: password
       );
       FirebaseUser user = result.user;
+
+      final CollectionReference postsRef = Firestore.instance.collection('users');
+      final jsonUserInfo = {
+        "name": newUser.name,
+        "program": newUser.program,
+        "type": newUser.type
+      };
+      await postsRef.document(user.uid).setData(jsonUserInfo);
+
+
+      if (newUser.type == "professor"){
+        final CollectionReference profRef = Firestore.instance.collection('programs')
+                                .document(progID).collection('professors');
+        await profRef.document(user.uid).setData({"name": newUser.name});
+      }
+      else if (newUser.type == "student"){
+        final CollectionReference studRef = Firestore.instance.collection('programs')
+                                .document(progID).collection('students');
+        await studRef.document(user.uid).setData({"name": newUser.name, "professor": professor});
+      }
+
       return _userFromFirebaseUser(user);
 
     } catch(e) {

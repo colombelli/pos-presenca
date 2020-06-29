@@ -58,7 +58,8 @@ class _ProfessorDropState extends State<ProfessorDrop> {
       }
       setState(() {
         availableProfessors = buildDropdownMenuItems(professors);
-        selectedProfessor = availableProfessors[0].value;
+        //selectedProfessor = availableProfessors[0].value;
+        widget.callbackNewProfessor(availableProfessors[0].value);
         loading = false;
       });
     } 
