@@ -14,6 +14,7 @@
     "name_hint": "Nome",
     "email_hint": "E-mail",
     "password_hint": "Senha",
+    "professor_hint": "Selecione seu orientador",
     "student": "Orientando",
     "professor": "Orientador",
     "presence_registration_title": "Registro de Presença",

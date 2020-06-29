@@ -7,7 +7,8 @@ import 'package:pg_check/services/database.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pg_check/models/program.dart';
-import 'package:pg_check/screens/authenticate/program_list.dart';
+import 'package:pg_check/models/user.dart';
+import 'package:pg_check/screens/authenticate/prof_drop.dart';
 
 class Register extends StatefulWidget {
 
@@ -35,6 +36,8 @@ class _RegisterState extends State<Register> {
   String userType;
   
   Program selectedProgram;
+  User selectedProfessor;
+
 
   @override
   void initState() { 
@@ -50,6 +53,14 @@ class _RegisterState extends State<Register> {
 
     final translation = (String s) => AppLocalizations.of(context).translate(s);
 
+    callbackSetProfessor(newProfessor) {
+        print("it arrived here");
+        print(newProfessor.name);
+
+        setState(() {
+          selectedProfessor = newProfessor;
+        });
+  }
 
     return Scaffold (
         backgroundColor: Colors.orange[700],
@@ -114,7 +125,12 @@ class _RegisterState extends State<Register> {
                       ),
                     ),
                 
-                SizedBox(height: 20.0),
+                ProfessorDrop(typeOfUser: userType, 
+                  callbackNewProfessor: callbackSetProfessor, 
+                  selectedProgram: selectedProgram,
+                  selectedProfessor: selectedProfessor,),
+
+
                 TextFormField(
                   decoration: textInputDecoration.copyWith(
                     hintText: translation("name_hint"),
@@ -184,3 +200,6 @@ class _RegisterState extends State<Register> {
         );
   }
 }
+
+
+
