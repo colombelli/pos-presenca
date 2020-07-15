@@ -20,6 +20,7 @@ class _PresenceRegistrationState extends State<PresenceRegistration> {
 
 
   bool _loading = false;
+  String _userReg = '';
 
   final TextEditingController _pinPutController = TextEditingController();
   final FocusNode _pinPutFocusNode = FocusNode();
@@ -47,23 +48,18 @@ class _PresenceRegistrationState extends State<PresenceRegistration> {
         child: Text("Continuar"),
         textColor: Colors.orange[700],
         onPressed:  () {
-          Navigator.popAndPushNamed(context, '/');
+          _pinPutController.text = '';
+          Navigator.pop(context);
         },
         );
-
-        AlertDialog success = AlertDialog(
-          title: Text("Registrado"),
-          content: Text("Presença registrada com sucesso."),
-          actions: [
-            continueButton
-          ],
-        );     
+ 
 
         Widget cancelButton = FlatButton(
         child: Text("Cancelar"),
         textColor: Colors.orange[700],
         onPressed:  () {
-          Navigator.popAndPushNamed(context, '/');
+          _pinPutController.text = '';
+          Navigator.pop(context);
         },
         );
 
@@ -102,16 +98,11 @@ class _PresenceRegistrationState extends State<PresenceRegistration> {
       );     
     return possiblePINs;
     }
-/*
-  Future<void> updateProgramHash() async {
-    return await programsCollection.document(widget.userInfo.uid).setData({
-      'name': widget.userInfo.name,
-    });
-  }
-*/
-    void registerPresence(String pin) async {
+
+    Future<List<dynamic>> registerPresence(String pin) async{
       
       _loading = true;
+      var matchAnswer = [false, ''];
 
       await getPossiblePINs().then(
         (possiblePINs) {
@@ -120,21 +111,15 @@ class _PresenceRegistrationState extends State<PresenceRegistration> {
 
             if (pin == user['pin1'] || pin == user['pin2']){
               _loading = false;
-              print("PIN MATCH");
-              print(user['name']);
-              return;
+              _pinPutController.text = '';
+            
+              matchAnswer = [true, user['name']];
             }
           }
-
-          // if it arrived here and didn't return, then no pin MATCHES
-        _loading = false;
-        print("NO MATCHES FOUND");
-        return;
-
         });
 
-        
-
+      _loading = false;
+      return matchAnswer;
     }
 
 
@@ -213,8 +198,21 @@ class _PresenceRegistrationState extends State<PresenceRegistration> {
                           color: Colors.deepOrange,
                           textColor: Colors.white,
                           splashColor: Colors.deepOrange,
-                          onPressed: () => {
-                              registerPresence(_pinPutController.text)
+                          onPressed: () async {
+                              var matchResult;
+                              await registerPresence(_pinPutController.text).then((value) => matchResult = value);
+                              
+                              if (matchResult[0]){
+                                showDialog(context: context, builder: (context)=>AlertDialog(
+                                    title: Text("Obrigado, "+matchResult[1]),
+                                    content: Text("Sua presença foi registrada com sucesso!"),
+                                    actions: [
+                                      continueButton
+                                    ],
+                                  ));
+                              } else {
+                                showDialog(context: context, builder: (context)=>errorReg);
+                              }
                             },
                           child: const Text('Registrar', style: TextStyle(fontSize: 17),)
                     ),
