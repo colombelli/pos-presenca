@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pg_check/app_localizations.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 import 'dart:async';
 import 'package:pinput/pin_put/pin_put.dart';
 import 'package:pg_check/models/user.dart';
@@ -31,10 +30,6 @@ class _PresenceRegistrationState extends State<PresenceRegistration> {
   String _dataString;
   String _key2;
 
-  TextEditingController textEditingController = TextEditingController();
-
-  StreamController<ErrorAnimationType> errorController;
-
   final TextEditingController _pinPutController = TextEditingController();
   final FocusNode _pinPutFocusNode = FocusNode();
   BoxDecoration get _pinPutDecoration {
@@ -48,15 +43,8 @@ class _PresenceRegistrationState extends State<PresenceRegistration> {
   @override
   void initState() {
     super.initState();
-    errorController = StreamController<ErrorAnimationType>();
   }
 
-  @override
-  void dispose() {
-    errorController.close();
-
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
