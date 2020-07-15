@@ -83,51 +83,6 @@ class _StudentPresenceRegistrationState extends State<StudentPresenceRegistratio
   @override
   Widget build(BuildContext context) {
     
-    Widget continueButton = FlatButton(
-        child: Text("Continuar"),
-        textColor: Colors.orange[700],
-        onPressed:  () {
-          Navigator.popAndPushNamed(context, '/');
-        },
-        );
-
-        AlertDialog success = AlertDialog(
-          title: Text("Registrado"),
-          content: Text("Presença registrada com sucesso."),
-          actions: [
-            continueButton
-          ],
-        );     
-
-        Widget cancelButton = FlatButton(
-        child: Text("Cancelar"),
-        textColor: Colors.orange[700],
-        onPressed:  () {
-          Navigator.popAndPushNamed(context, '/');
-        },
-        );
-
-        Widget againButton = FlatButton(
-        child: Text("Tentar Novamente"),
-        textColor: Colors.orange[700],
-        onPressed:  () {
-          Navigator.pop(context);
-        },
-        );
-
-        AlertDialog errorReg = AlertDialog(
-          title: Text("Erro"),
-          content: Text("Não foi possível registrar a presença. Por favor, tente novamente."),
-          actions: [
-            cancelButton,
-            againButton
-          ],
-        );  
-  
-    
-
-    
-
     return Column(
             children: <Widget>[
               Container(
