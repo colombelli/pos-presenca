@@ -130,6 +130,32 @@ class _StudentPresenceRegistrationState extends State<StudentPresenceRegistratio
 
     return Column(
             children: <Widget>[
+              Container(
+                  height: 40
+                ),
+
+              Center(
+                  child: Container(
+                  height: 100,
+                  width: 300,
+                  child:  Card(
+                    color: Colors.white,
+                      child:
+                        Container( 
+                        height: 50,
+                        width: 50,
+                        child: Center(
+                          child: Text('PIN', style: TextStyle(fontSize: 50, color: Colors.deepOrange),)
+                          )
+                        )
+                      )
+                    )
+                ),
+
+                Container(
+                  height: 10
+                ),
+
                 Center(
                   child: Container(
                   height: 100,
@@ -141,7 +167,9 @@ class _StudentPresenceRegistrationState extends State<StudentPresenceRegistratio
                   Container( 
                     height: 50,
                     width: 50,
-                    child: Text(_pin1)
+                    child: Center(
+                      child: Text(_pin1, style: TextStyle(fontSize: 50, color: Colors.deepOrange),)
+                    )
                   )
                   )
                   ),
