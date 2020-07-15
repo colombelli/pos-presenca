@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pg_check/app_localizations.dart';
 import 'dart:async';
 import 'package:pinput/pin_put/pin_put.dart';
+import 'package:pg_check/shared/loading.dart';
 import 'package:pg_check/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -17,18 +18,8 @@ class _PresenceRegistrationState extends State<PresenceRegistration> {
   
   GlobalKey globalKey = new GlobalKey();
 
-  final CollectionReference programsCollection = Firestore.instance.collection('programs');
-  Future<void> updateProgramHash() async {
-    return await programsCollection.document(widget.userInfo.uid).setData({
-      'name': widget.userInfo.name,
-      'key': _dataString,
-      'key2': _key2
-    });
-  }
 
-
-  String _dataString;
-  String _key2;
+  bool _loading = false;
 
   final TextEditingController _pinPutController = TextEditingController();
   final FocusNode _pinPutFocusNode = FocusNode();
@@ -94,7 +85,60 @@ class _PresenceRegistrationState extends State<PresenceRegistration> {
         );
 
 
-    return Scaffold(
+    final CollectionReference usersCollection = Firestore.instance.collection('users');
+    Future<List<dynamic>> getPossiblePINs() async {
+      
+      var possiblePINs = [];
+      await usersCollection.getDocuments().then(
+        (snap) => {
+            snap.documents.forEach((doc) { 
+              dynamic user = doc.data;
+              if (user['pin1'] != null) {
+                possiblePINs.add({'name': user['name'], 'pin1': user['pin1'], 'pin2': user['pin2']});
+              }
+          })
+        }
+        
+      );     
+    return possiblePINs;
+    }
+/*
+  Future<void> updateProgramHash() async {
+    return await programsCollection.document(widget.userInfo.uid).setData({
+      'name': widget.userInfo.name,
+    });
+  }
+*/
+    void registerPresence(String pin) async {
+      
+      _loading = true;
+
+      await getPossiblePINs().then(
+        (possiblePINs) {
+          
+          for (var user in possiblePINs) {
+
+            if (pin == user['pin1'] || pin == user['pin2']){
+              _loading = false;
+              print("PIN MATCH");
+              print(user['name']);
+              return;
+            }
+          }
+
+          // if it arrived here and didn't return, then no pin MATCHES
+        _loading = false;
+        print("NO MATCHES FOUND");
+        return;
+
+        });
+
+        
+
+    }
+
+
+    return _loading ? Loading() : Scaffold(
       appBar: AppBar(
         leading: Icon(Icons.supervisor_account),
         title: Text(translation('presence_registration_title')),
@@ -170,7 +214,7 @@ class _PresenceRegistrationState extends State<PresenceRegistration> {
                           textColor: Colors.white,
                           splashColor: Colors.deepOrange,
                           onPressed: () => {
-                              _pinPutController.text = '',
+                              registerPresence(_pinPutController.text)
                             },
                           child: const Text('Registrar', style: TextStyle(fontSize: 17),)
                     ),
