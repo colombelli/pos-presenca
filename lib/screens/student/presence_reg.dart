@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:barcode_scan/barcode_scan.dart';
-import 'package:flutter/services.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 import 'package:pg_check/models/user.dart';
 import 'package:pg_check/shared/loading.dart';
+import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
 
 class StudentPresenceRegistration extends StatefulWidget {
 
@@ -17,12 +18,67 @@ class StudentPresenceRegistration extends StatefulWidget {
 
 class _StudentPresenceRegistrationState extends State<StudentPresenceRegistration> {
   
-  String _barcodeString = "";
+  final CollectionReference programsCollection = Firestore.instance.collection('users');
+  Future<void> updateUserPIN() async {
+    return await programsCollection.document(widget.userInfo.uid).setData({
+      'name': widget.userInfo.name,
+      'program': widget.userInfo.program,
+      'type': widget.userInfo.type,
+      'pin1': _pin1,
+      'pin2': _pin2
+    });
+  }
+
+  String generatePIN() {
+    var rand = new Random();
+    var pin =  new List.generate(6, (_) => rand.nextInt(10));
+    
+    String strPIN = "";
+    pin.forEach((element) {strPIN = strPIN + element.toString();});
+
+    return strPIN;
+  }
+
+  Timer timer;
+
+  String _pin1;
+  String _pin2;
+
+
+
+  void changePINcode() {
+    String newPIN = generatePIN();
+    setState(() {
+      _pin1 = newPIN;
+    });
+    updateUserPIN();
+
+    new Timer(const Duration(seconds: 10), () {
+      setState(() {
+        _pin2 = _pin1;
+      });
+
+      updateUserPIN();
+    });
+  }
+
+  
+
 
   @override
-  initState() {
+  void initState() {
     super.initState();
-  } 
+
+    var newPIN;
+    newPIN = generatePIN();
+
+    _pin1 = newPIN;
+    _pin2 = newPIN;
+    updateUserPIN();
+
+    timer = Timer.periodic(Duration(seconds: 60), (Timer t) => changePINcode());
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -68,55 +124,7 @@ class _StudentPresenceRegistrationState extends State<StudentPresenceRegistratio
           ],
         );  
   
-    Future<void> validateReg(String codeReaded, String userId) async {
-      
-      var baseUrl = 'https://us-central1-pg-check-68d1b.cloudfunctions.net/presenceRegistration';
-      var reqUrl = baseUrl + "?regCode=" + codeReaded + "&userID=" + userId; 
-
-      var response = await http.get(reqUrl);
-      if (response.statusCode == 200) {
-        var jsonResponse = convert.jsonDecode(response.body);
-
-        if (jsonResponse){
-          print('reg confirmed');
-          return showDialog(
-                  context: context,
-                  builder: (context) => success
-                );
-        } else {
-          print('wrong code stop trying to hack our requests');
-          return showDialog(
-                  context: context,
-                  builder: (context) => errorReg
-                );
-        }
-
-      } else {
-        print('Request failed with status: ${response.statusCode}.');
-      }
-    }
-
-    Future scan() async {
-      try {
-        var barcode = await BarcodeScanner.scan();
-        var codeStr = barcode.rawContent;
-        await validateReg(codeStr, widget.userInfo.uid);
-        
-        //setState(() => this._barcodeString = barcode.rawContent);
-      } on PlatformException catch (e) {
-        if (e.code == BarcodeScanner.cameraAccessDenied) {
-          setState(() {
-            this._barcodeString = 'The user did not grant the camera permission!';
-          });
-        } else {
-          setState(() => this._barcodeString = 'Error: $e');
-        }
-      } on FormatException{
-        setState(() => this._barcodeString = 'null (User returned using the "back"-button before scanning anything. Result)');
-      } catch (e) {
-        setState(() => this._barcodeString = 'Error: $e');
-      }
-    }
+    
 
     
 
@@ -133,14 +141,7 @@ class _StudentPresenceRegistrationState extends State<StudentPresenceRegistratio
                   Container( 
                     height: 50,
                     width: 50,
-                    child:
-                        RaisedButton(
-                          color: Colors.deepOrange,
-                          textColor: Colors.white,
-                          splashColor: Colors.deepOrange,
-                          onPressed: scan,
-                          child: const Text('Ativar câmera para registrar código')
-                    ),
+                    child: Text(_pin1)
                   )
                   )
                   ),
