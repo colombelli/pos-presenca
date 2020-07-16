@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pg_check/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:pg_check/screens/program/accredit_justification.dart';
 import 'package:pg_check/shared/loading.dart';
 
 /* pega faltas da coleção absences do aluno que não tenham justificativa, ele seleciona a que quiser e
@@ -199,7 +200,7 @@ class _DetailsPageState extends State<DetailsPage> {
       appBar: AppBar(
         elevation: 0.0,
         backgroundColor: Colors.orange[700],
-        title: Text(DateFormat('yMd').format(DateTime.parse(widget.absences[0].data['date'].toDate().toString()))),
+        title: Text(formatDays(widget.absences)),
       ),
       body: ListView(
         children: <Widget> [
