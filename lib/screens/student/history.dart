@@ -68,7 +68,7 @@ class _PreviousAbsencesState extends State<PreviousAbsences> {
     QuerySnapshot  qn;
 
     await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (data) async {
-      if (data.documents.length > 0){
+      if (data.documents.isNotEmpty){
           await data.documents[0].reference.collection("students").where("name", isEqualTo: widget.userInfo.name).limit(1).getDocuments().then( (atad) async { // ! Mudar para pesquisar pelo nome do usuario
             qn = await atad.documents[0].reference.collection(abCollection).orderBy('date').getDocuments();                                      // ! quando integrar com a página de usuário
           });

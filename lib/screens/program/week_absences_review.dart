@@ -66,8 +66,7 @@ class _WeekAbsencesListState extends State<WeekAbsencesList> {
             if (adat.documents.length > 0) {
               for (var doc in adat.documents) {
                 final snap = await doc.reference.collection('weekAbsences').where('date', isLessThan: Timestamp.fromDate(DateTime.now())).getDocuments();
-                // ! ja que eles podem ter uma falta, não deveria ser? if ( snap.documents.length != 0 && snap.documents.length > 1) { 
-                if ( snap.documents.length != 0 ) { 
+                if ( snap.documents.length != 0 && snap.documents.length > 1) { 
                   dsl.add(doc);
                 }
               }
