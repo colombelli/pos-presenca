@@ -9,6 +9,13 @@ import 'package:pg_check/shared/loading.dart';
 
 /* pega faltas da coleção absences do aluno que não tenham justificativa, ele seleciona a que quiser e
 insere seu motivo */
+String formatDays(List days) {
+  String formattedDays = DateFormat('d/M/y').format( DateTime.parse(days[days.length-1].data['date'].toDate().toString()));
+  for(int i = days.length-2; i >= 0; i--) {
+    formattedDays += ',  ' + DateFormat('d/M/y').format( DateTime.parse(days[i].data['date'].toDate().toString()));
+  }
+  return formattedDays;
+}
 
 class JustificationsReview extends StatelessWidget {
   final AuthService _auth = AuthService();
@@ -124,9 +131,16 @@ class _ExpandableListViewState extends State<ExpandableListView> {
   Future _data;
   List weekAbsencesIDS = new List();
 
+    int getWeekNumber(DateTime date) {
+    int dayOfYear = int.parse(DateFormat("D").format(date));
+    return ((dayOfYear - date.weekday + 10) / 7).floor();
+  }
+
   Future getAbsences() async {
     var firestone = Firestore.instance;
     QuerySnapshot  qn;
+    Map absencesPerWeek = new Map();
+    List uncheckedAbsences;
 
     await firestone.collection("programs").where("name", isEqualTo: widget.userInfo.program).limit(1).getDocuments().then( (data) async {
       if (data.documents.length > 0){
@@ -136,12 +150,18 @@ class _ExpandableListViewState extends State<ExpandableListView> {
         }
       }
     );
-
-    return qn.documents.where((absence) => absence.data['status'] == 'unchecked').toList();
+    uncheckedAbsences = qn.documents.where((element) => element.data['status'] == 'unchecked').toList();
+    uncheckedAbsences.forEach((unchAbsenceDay) {
+      int weekNumber = getWeekNumber(DateTime.parse(unchAbsenceDay.data["date"].toDate().toString()));
+      List absencesOnWeek = absencesPerWeek.containsKey(weekNumber) ? absencesPerWeek[weekNumber] : new List();
+      absencesOnWeek.add(unchAbsenceDay);
+      absencesPerWeek[weekNumber] = absencesOnWeek; 
+    });
+    return absencesPerWeek;
   }
 
-  navigateToJustificationDetails(student, absence, userInfo) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => JustificationDetails(student: student, absence: absence, userInfo: userInfo,)));
+  navigateToJustificationDetails(student, absences, userInfo) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => JustificationDetails(student: student, absences: absences, userInfo: userInfo,)));
   }
 
 
@@ -150,8 +170,6 @@ class _ExpandableListViewState extends State<ExpandableListView> {
     super.initState();
     _data = getAbsences();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -225,6 +243,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                       child: ListView.builder(
                         itemCount: snapshot.data.length, 
                         itemBuilder: (BuildContext context, int index) {
+                          List keys = snapshot.data.keys.toList();
                           return new Container(
                             decoration:
                                 new BoxDecoration(border: new Border.all(width: 1.0, color: Colors.deepOrange), color: Colors.orange[100]),
@@ -236,30 +255,33 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                               title: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  new Text(
-                                    DateFormat('yMd').format(DateTime.parse(snapshot.data[index].data['date'].toDate().toString())),
+                                new Flexible(
+                                  child: Text(
+                                    formatDays(snapshot.data[keys[index]]),
                                     style: TextStyle(color: Colors.orange[700]),
-                                  ),
-                                new FlatButton(
-                                  padding: EdgeInsets.all(10.0),
-                                  child: Row(
-                                    children: <Widget>[
-//                                      Icon(Icons.visibility), // ! Decidir com/sem icon
-                                      Text(
-                                        "  Visualizar",
-                                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange[700]),
-                                      )
-                                    ]
-                                  ),
-                                  onPressed: () async {
-                                    navigateToJustificationDetails(widget.student, snapshot.data[index], widget.userInfo);
-                                    //return _showToast(context);
-                                  },
-                                  shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
-                                ),  
-                                ],
-                              ),
-                            ),
+                                    overflow: TextOverflow.visible
+                                    ),
+                                ),
+                                  new FlatButton(
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Row(
+                                      children: <Widget>[
+  //                                      Icon(Icons.visibility), // ! Decidir com/sem icon
+                                        Text(
+                                          "  Visualizar",
+                                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange[700]),
+                                        )
+                                      ]
+                                    ),
+                                    onPressed: () async {
+                                      navigateToJustificationDetails(widget.student, snapshot.data[keys[index]], widget.userInfo);
+                                      //return _showToast(context);
+                                    },
+                                    shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
+                                  ),  
+                                  ],
+                                ),
+                            )
                           );
                         },
                       ),
@@ -309,10 +331,10 @@ class ExpandableContainer extends StatelessWidget {
 }
 
 class JustificationDetails extends StatefulWidget {
-  final DocumentSnapshot absence;
+  final List absences;
   final DocumentSnapshot student;
   final User userInfo;
-  JustificationDetails({ this.absence, this.student, key, this.userInfo}): super(key: key);
+  JustificationDetails({ this.absences, this.student, key, this.userInfo}): super(key: key);
 
   @override
   _JustificationDetailsState createState() => _JustificationDetailsState();
@@ -338,7 +360,7 @@ class _JustificationDetailsState extends State<JustificationDetails> {
       appBar: AppBar(
         elevation: 0.0,
         backgroundColor: Colors.orange[700],
-        title: Text(DateFormat('yMd').format(DateTime.parse(widget.absence.data['date'].toDate().toString()))),
+        title: Text(formatDays(widget.absences)),
       ),
       body: Container(
         padding: EdgeInsets.all(10),
@@ -351,9 +373,9 @@ class _JustificationDetailsState extends State<JustificationDetails> {
         children: <Widget> [
           Card(
             child: ListTile(
-              leading: Icon(widget.absence.data['justified'] ? Icons.message: Icons.speaker_notes_off, color: Colors.orange[700]),
+              leading: Icon(widget.absences[0].data['justified'] ? Icons.message: Icons.speaker_notes_off, color: Colors.orange[700]),
               title: Text("Justificativa:", style: TextStyle(color: Colors.orange[700]),),
-              subtitle: Text(widget.absence.data['justification']),
+              subtitle: Text(widget.absences[0].data['justification']),
             ),
           ),
           SizedBox(height: 20,),
@@ -417,12 +439,15 @@ class _JustificationDetailsState extends State<JustificationDetails> {
       if (studentList.documents.length > 0){
           await studentList.documents[0].reference.collection("students")
           .where("name", isEqualTo: widget.student.data['name']).limit(1).getDocuments()
-          .then( (absencesList) async {
-            await absencesList.documents[0].reference.collection("absences")
-            .document(widget.absence.documentID)
-            .updateData(
-            {
-              "status": newStatus
+          .then( (studColl) {
+            widget.absences.forEach((absence) async {
+              await studColl.documents[0].reference.collection("absences")
+              .document(absence.documentID)
+              .updateData(
+                {
+                  "status": newStatus
+                }
+              );
             });
           });  
         }
