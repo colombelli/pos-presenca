@@ -111,10 +111,18 @@ class _SignInState extends State<SignIn> {
                 color: Colors.deepOrange ,//orange[400],
                 splashColor: Colors.grey,
                 elevation: 10.0,
-                child: Text("set users", 
+                child: Text("reset db faltas", 
                   style: TextStyle(color: Colors.white),
                   ),
-                onPressed: () async {await ResetAbsences().populateDBUsers(); print("done");},
+                onPressed: () async {
+                  setState(() {
+                    error = 'Setando faltas...';
+                  });
+                  await ResetAbsences().populateDBabsences(); print("done!");
+                  setState(() {
+                    error = 'Faltas setadas.';
+                  });
+                  },
               )
             ],
           ),

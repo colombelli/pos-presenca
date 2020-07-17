@@ -116,6 +116,28 @@ class ResetAbsences {
     "ariel.sorkin@inf.ufrgs.br"
   ];
 
+  final DateTime day13 = new DateTime.utc(2020, DateTime.july, 14);
+  final DateTime day14 = new DateTime.utc(2020, DateTime.july, 15);
+  final DateTime day15 = new DateTime.utc(2020, DateTime.july, 16);
+  final DateTime day16 = new DateTime.utc(2020, DateTime.july, 17);
+  final DateTime day17 = new DateTime.utc(2020, DateTime.july, 18);
+
+  List<String> a13 = [
+    "Felipe C.", "Manuela H.", "Tobias Z."
+  ];
+  List<String> a14 = [
+    "Felipe C.", "Roberta J. K.", "Tobias Z.",  "Daniela M.", "Mateus S."
+  ];
+  List<String> a15 = [
+    "Felipe C.", "Daniela M.", "João S.", "Mateus S."
+  ];
+  List<String> a16 = [
+    "Felipe C.", "Carolina F.", "Roberta H. Q."
+  ];
+  List<String> a17 = [
+    "Felipe C.", "Carolina F.", "Joel L.", "João S."
+  ];
+ 
   final AuthService auth = AuthService();
 
 
@@ -138,7 +160,7 @@ class ResetAbsences {
 
 
   Future<void> populateDBUsers() {
-
+    
     var userType = "student";
     students.asMap().forEach((i, student) {
       print("Setting student: "+student);
@@ -148,12 +170,43 @@ class ResetAbsences {
     userType = "professor";
     professors.asMap().forEach((i, professor) { 
       print("Trying to set professor: "+professor);
-      setUser(userType, professor, prEmails[i], "");
+      try{
+        setUser(userType, professor, prEmails[i], "");
+      }catch(e){
+        print("Already added.");
+      }
     });
     return null;
   }
 
-  Future<void> populateDBabsences(){
+
+  void setAbsence(ref, name, date, documentID) async{
+
+    await ref.where("name", isEqualTo: name).getDocuments().then((qsn) {
+        String docID = qsn.documents.first.documentID;
+        ref.document(docID).collection("weekAbsences").document(documentID).setData({"data": date});
+      });
+    
+    return;
+  }
+
+
+  Future<void> populateDBabsences() async{
+    
+    final List abs = [a13,a14,a15,a16,a17];
+    final List dates = [day13,day14,day15,day16,day17];
+
+    final CollectionReference stRef = Firestore.instance.collection('programs')
+                            .document("8TRUasflYDMqJ1AFYpLKMo9eUVb2").collection('students');
+    
+    abs.asMap().forEach((i, absents) {
+
+      absents.forEach((stName){
+        var genDocID = stName+i.toString();
+        setAbsence(stRef, stName, dates[i], genDocID);
+      });
+    });
+
     return null;
   }
 }
