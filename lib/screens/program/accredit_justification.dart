@@ -247,7 +247,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                           return new Container(
                             decoration:
                                 new BoxDecoration(border: new Border.all(width: 1.0, color: Colors.deepOrange), color: Colors.orange[100]),
-                            child: new ListTile(
+                            child: new Scrollbar(child: ListTile(
                               leading: new Icon(
                                 Icons.date_range,
                                 color: Colors.orange[700],
@@ -282,7 +282,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                   ],
                                 ),
                             )
-                          );
+                          ));
                         },
                       ),
                     );

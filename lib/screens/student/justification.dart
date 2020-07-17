@@ -72,7 +72,7 @@ class _StudentAbsencesJustificationState extends State<StudentAbsencesJustificat
               );
             } else if (snapshot.data.isNotEmpty) {
               List keys = snapshot.data.keys.toList();
-              return ListView.builder(
+              return Scrollbar(child: ListView.builder(
                   itemCount: keys.length,
                   itemBuilder: (_, index){
                     return Card(
@@ -84,7 +84,7 @@ class _StudentAbsencesJustificationState extends State<StudentAbsencesJustificat
                         },
                       ),
                     );
-                });
+                }));
           } else {
                 //return Center(child: Text("There are no registered absences for that student"),);
                 return Center(child: Text("Não existem faltas registradas para este aluno.", style: TextStyle(color: Colors.white),),);

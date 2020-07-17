@@ -87,7 +87,7 @@ class _StudentListPageState extends State<StudentListPage> {
               child: Loading(), 
             );
           } else {
-            return ListView.builder(
+            return Scrollbar(child:ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (_, index){
                 return Card(
@@ -97,7 +97,7 @@ class _StudentListPageState extends State<StudentListPage> {
                     onTap: () => navigateToAbsences(snapshot.data[index]),
                   ),
                 );
-            });
+            }));
         }
       }),
     );
@@ -162,7 +162,7 @@ class _AbsencesPageState extends State<AbsencesPage> {
                 child: Loading(),
               );
             } else if (snapshot.data.isNotEmpty) {
-              return ListView.builder(
+              return Scrollbar(child:ListView.builder(
                   itemCount: snapshot.data.length,
                   itemBuilder: (_, index){
                     return Card(
@@ -172,7 +172,7 @@ class _AbsencesPageState extends State<AbsencesPage> {
                         onTap: () => navigateToDetails(snapshot.data[index]),
                       ),
                     );
-                });
+                }));
           } else {
                 //return Center(child: Text("There are no registered absences for that student"),);
                 return Center(child: Text("Não existem faltas registradas para este aluno.", style: TextStyle(color: Colors.white),),);
@@ -212,11 +212,11 @@ class _DetailsPageState extends State<DetailsPage> {
             ),
           ),
           Card(
-            child: ListTile(
+            child: Scrollbar(child:ListTile(
               leading: Icon(widget.absence.data['justified'] ? Icons.message: Icons.speaker_notes_off, color: Colors.orange[700]),
               title: Text("Justificativa:", style: TextStyle(color: Colors.orange[700])),
               subtitle: Text(widget.absence.data['justification']),
-            ),
+            )),
           ),
         ]
       ),
