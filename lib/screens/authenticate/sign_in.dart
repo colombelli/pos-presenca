@@ -3,6 +3,7 @@ import 'package:pg_check/app_localizations.dart';
 import 'package:pg_check/services/auth.dart';
 import 'package:pg_check/shared/constants.dart';
 import 'package:pg_check/shared/loading.dart';
+import 'package:pg_check/services/reset_abs.dart';
 
 class SignIn extends StatefulWidget {
 
@@ -104,7 +105,17 @@ class _SignInState extends State<SignIn> {
               Text(
                 error,
                 style: TextStyle(color: Colors.red, fontSize: 14.0)
-                )
+                ),
+              SizedBox(height: 20.0),
+              RaisedButton(
+                color: Colors.deepOrange ,//orange[400],
+                splashColor: Colors.grey,
+                elevation: 10.0,
+                child: Text("set users", 
+                  style: TextStyle(color: Colors.white),
+                  ),
+                onPressed: () async {await ResetAbsences().populateDBUsers(); print("done");},
+              )
             ],
           ),
           ),

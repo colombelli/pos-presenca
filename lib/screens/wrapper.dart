@@ -33,7 +33,8 @@ class Wrapper extends StatelessWidget {
    if (user == null) {
      return Authenticate();
    } else {
-
+     return Authenticate();
+/*
     return new StreamBuilder(
       stream: Firestore.instance.collection('users').document(user.uid).snapshots(),
       builder: (context, snapshot){
@@ -47,6 +48,6 @@ class Wrapper extends StatelessWidget {
         }
       },
     );
-   }
+   */}
   }
 }
