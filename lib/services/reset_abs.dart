@@ -184,7 +184,7 @@ class ResetAbsences {
 
     await ref.where("name", isEqualTo: name).getDocuments().then((qsn) {
         String docID = qsn.documents.first.documentID;
-        ref.document(docID).collection("weekAbsences").document(documentID).setData({"date": date});
+        ref.document(docID).collection("weekAbsences").document(documentID).setData({"date": date, "justification": "", "justified": false});
       });
     
     return;
