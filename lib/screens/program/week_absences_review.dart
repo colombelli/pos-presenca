@@ -98,7 +98,7 @@ class _WeekAbsencesListState extends State<WeekAbsencesList> {
               child: Loading(), //Text("Loading..."),
             );
           } else if (snapshot.data.isNotEmpty) {
-            return ListView.builder(
+            return Scrollbar(child:ListView.builder(
               itemBuilder: (BuildContext context, int index) {
                 return new ExpandableListView(
                   student: snapshot.data[index],
@@ -106,7 +106,7 @@ class _WeekAbsencesListState extends State<WeekAbsencesList> {
                 );
               },
               itemCount: snapshot.data.length,
-            );
+            ));
           } else {
             return Center(
               child: Container(
@@ -214,7 +214,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
   Widget build(BuildContext context) {
     return new Container(
       margin: new EdgeInsets.symmetric(vertical: 1.0),
-      child: new Column(
+      child: Column(
         children: <Widget>[
           new Container(
             color: Colors.white,
