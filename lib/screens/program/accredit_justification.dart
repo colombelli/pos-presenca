@@ -79,10 +79,17 @@ class _JustificationsListState extends State<JustificationsList> {
     return uncheckedStudents;
   }
 
+  var forceUpdate = 0;
+
   @override
   void initState() {
     super.initState();
     _data = getUncheckedStudents();
+    _data.then((value) {
+      setState(() {
+        forceUpdate = 1;
+      });
+    });
   }
 
   @override
@@ -92,7 +99,7 @@ class _JustificationsListState extends State<JustificationsList> {
       child: FutureBuilder(
         future: _data,
         builder: (_, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting || forceUpdate == 0) {
             return Center(
               child: Loading(), //Text("Loading..."),
             );
