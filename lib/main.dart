@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
     
     value: AuthService().user,
     child: MaterialApp(
+      debugShowCheckedModeBanner: false,
 
       supportedLocales: [
         Locale('en', 'US'),

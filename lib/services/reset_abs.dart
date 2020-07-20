@@ -116,6 +116,7 @@ class ResetAbsences {
     "ariel.sorkin@inf.ufrgs.br"
   ];
 
+/*
   final DateTime day13 = new DateTime.utc(2020, DateTime.july, 14);
   final DateTime day14 = new DateTime.utc(2020, DateTime.july, 15);
   final DateTime day15 = new DateTime.utc(2020, DateTime.july, 16);
@@ -126,6 +127,14 @@ class ResetAbsences {
   final DateTime day23 = new DateTime.utc(2020, DateTime.july, 23);
   final DateTime day24 = new DateTime.utc(2020, DateTime.july, 24);
   final DateTime day25 = new DateTime.utc(2020, DateTime.july, 25);
+*/
+
+
+  final DateTime day13 = DateTime.parse("2020-07-13 00:00");
+  final DateTime day14 = DateTime.parse("2020-07-14 00:00");
+  final DateTime day15 = DateTime.parse("2020-07-15 00:00");
+  final DateTime day16 = DateTime.parse("2020-07-16 00:00");
+  final DateTime day17 = DateTime.parse("2020-07-17 00:00");
 
   List<String> a13 = [
     "Felipe C.", "Manuela H.", "Tobias Z."
