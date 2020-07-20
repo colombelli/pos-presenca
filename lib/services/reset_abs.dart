@@ -198,8 +198,8 @@ class ResetAbsences {
 
   Future<void> populateDBabsences() async{
     
-    final List abs = [a13,a14,a15,a16,a17,a13,a13,a13,a13,a13];
-    final List dates = [day13,day14,day15,day16,day17,day21,day22,day23,day24,day25];
+    final List abs = [a13,a14,a15,a16,a17];//,a13,a13,a13,a13,a13];
+    final List dates = [day13,day14,day15,day16,day17];//,day21,day22,day23,day24,day25];
 
     final CollectionReference stRef = Firestore.instance.collection('programs')
                             .document("8TRUasflYDMqJ1AFYpLKMo9eUVb2").collection('students');
