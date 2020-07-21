@@ -51,7 +51,7 @@ Planned absent functionalities and features
 Screenshots
 ------------
 
-Usability user-test protocols
+Usability test protocols
 ------------
 
 Statistical analysis
