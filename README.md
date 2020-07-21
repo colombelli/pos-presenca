@@ -10,7 +10,7 @@ Usability testing protocols were planned and performed with real users, making p
 
 Because of the functionallity urgence and its conceptual simplicity, vertical implementations were prioritized over horizontal ones. Hence, consolidating more backend features (including a database solution) and leaving aside some styling/aesthetic aspects. 
 
-Instalation
+Installation
 ------------
 Due to the incompleteness of our Flutter application, there's no official apk or ipa available, so you may test its functionality by cloning this repository, installing the third-party packages and finally building it. Since we still haven't tested Pós-presença on iOS platform, the bellow installion steps covers only Android users.
 
