@@ -4,15 +4,15 @@
 
 Introduction
 ------------
-Pós-presença is an automated solution for UFRGS's PPGC and PGMICRO graduate programs, which currently manages its student's attendence through manually counting their pen-made signature absences each week, considerably slowing down the workflow. The application was developed as the final project of the Interação Homem-Computador (Man-Machine Interaction) UFRGS's Computer Science dsicipline and proposed two methods for that: QR Code presence registration, and PIN Code presence registration. 
+Pós-presença is an automated solution for UFRGS's PPGC and PGMICRO graduate programs, which currently manages its student's attendence through manually counting their pen-made signature absences each week, considerably slowing down the workflow. The application was developed as the final project of the Interação Homem-Computador (Man-Machine Interaction) UFRGS's Computer Science discipline and proposed two methods for that: QR Code presence registration; and PIN Code presence registration. 
 
-User testing protocols were planned and performed, making possible to run a rigorous statistical analysis that searched for interface problems and helped validate some design decisions, as well as reconsider others. 
+Usability testing protocols were planned and performed with real users, making possible to run a rigorous statistical analysis that searched for interface problems and helped validate some design decisions, as well as reconsider others. 
 
-Because of the functionallity urgence and its conceptual simplicity, vertical implementations were prioritized over horizontal ones. Hence, consolidating more backend features (including a database solution) and leaving aside some styling aspects. 
+Because of the functionallity urgence and its conceptual simplicity, vertical implementations were prioritized over horizontal ones. Hence, consolidating more backend features (including a database solution) and leaving aside some styling/aesthetic aspects. 
 
 Instalation
 ------------
-Because of the incompleteness of our Flutter application, there's no apk available, so you may test its functionality by cloning this repository, installing the used packages and finally building its apk (we still didn't tested it on iOS platform).
+Due to the incompleteness of our Flutter application, there's no official apk or ipa available, so you may test its functionality by cloning this repository, installing the third-party packages and finally building it. Since we still haven't tested Pós-presença on iOS platform, the bellow installion steps covers only Android users.
 
     git clone https://github.com/colombelli/pg-check.git
     cd pg-check
@@ -26,7 +26,7 @@ Implemented functionalities and features
 ------------
 * E-mail/password login and registration :white_check_mark:
 * Absences status calendar :white_check_mark:
-* QR Code scan for presence registration
+* QR Code scan for presence registration :white_check_mark:
 * QR Code dynamical generation for presence validation :white_check_mark:
   * Double QR Code logic for further interaction robustness :white_check_mark:
   * Cloud validation to improve security :white_check_mark:
