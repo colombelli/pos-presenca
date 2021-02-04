@@ -4,7 +4,7 @@
 
 Introduction
 ------------
-Pós-presença is an automated solution designed for PPGC and PGMICRO graduate programs of Federal University of Rio Grande do Sul, which currently manage their student's attendence through manually counting their pen-made signatures each week, considerably slowing down the administration workflow. The application was developed as the final project of the Interação Homem-Computador (Man-Machine Interaction) UFRGS's Computer Science discipline and proposed two methods for that: QR Code presence registration; and PIN Code presence registration. 
+Pós-presença is an automated solution designed for PPGC and PGMICRO graduate programs of Federal University of Rio Grande do Sul, which currently manage their student's attendence through manually counting their pen-made signatures each week, considerably slowing down the administration workflow. The application was developed as the final project of the Interação Homem-Computador (Man-Machine Interaction) UFRGS's Computer Science course and proposed two methods for that: QR Code presence registration; and PIN Code presence registration. 
 
 Usability testing protocols were planned and performed with real users, making it possible to run a rigorous statistical analysis that investigated interface problems and helped validate some design decisions, as well as reconsider others. 
 
