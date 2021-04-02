@@ -2,6 +2,17 @@
 
  A Flutter application for PPGC-like programs to help in the students attendence management. 
 
+Summary
+------------
+- [Introduction](#introduction)
+- [Installation](#installation)
+- [Implemented functionalities and features](#implemented-functionalities-and-features)
+- [Partially implemented functionalities and features](#partially-implemented-functionalities-and-features)
+- [Lacking (and planned) functionalities and features](#lacking)
+- [Usability test protocols and tasks](#usability-test-protocols-and-tasks)
+- [Results and statistical analysis ](#results-and-statistical-analysis)
+
+
 Introduction
 ------------
 Pós-presença is an automated solution designed for PPGC and PGMICRO graduate programs of Federal University of Rio Grande do Sul, which currently manage their student's attendence through manually counting their pen-made signatures each week, considerably slowing down the administration workflow. The application was developed as the final project of the Interação Homem-Computador (Human-Computer Interaction) UFRGS's Computer Science course and proposed two methods for that: QR Code presence registration; and PIN Code presence registration. 
@@ -42,7 +53,7 @@ Partially implemented functionalities and features
 * Double language application (en-US / pt-BR)
 * Cross-platform application (Android / iOS)
 
-Lacking (and planned) functionalities and features
+<a name="lacking">Lacking (and planned) functionalities and features</a>
 ------------
 * Administration-side presence registration lock-screen
 * Periodical cloud function for updating student's attendence situation
